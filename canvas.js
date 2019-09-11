@@ -3,8 +3,8 @@ var fps = 16;
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
-var screen_width = 700;
-var screen_height = 700;
+var screen_width = window.innerWidth;
+var screen_height = window.innerHeight;
 
 class ChanceCommunityChest{ //consider inheritance for this with a parent CardDeck class
 	constructor(card_type){
@@ -46,8 +46,8 @@ class PlayerProfile{
 		this.player_name = player_name;
 		this.cash = 1500;
 		this.player_number = player_number;
-		this.width = 450;
-		this.height = 100;
+		this.width = 0.6*screen_width;
+		this.height = 0.15*screen_height;
 		this.coords = this.getCoords();
 	}
 	show(){
@@ -85,20 +85,20 @@ function initialize(){
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	//LOOP THIS!!
-	player_1 = new PlayerProfile("Karthick", 1);
-	player_1.show();
-	player_2 = new PlayerProfile("Niraj", 2);
-	player_2.show();
-	player_3 = new PlayerProfile("Alex", 3);
-	player_3.show();
-	player_4 = new PlayerProfile("Carson", 4);
-	player_4.show();
+	// player_1 = new PlayerProfile("Karthick", 1);
+	// player_1.show();
+	// player_2 = new PlayerProfile("Niraj", 2);
+	// player_2.show();
+	// player_3 = new PlayerProfile("Alex", 3);
+	// player_3.show();
+	// player_4 = new PlayerProfile("Carson", 4);
+	// player_4.show();
 
-	community_chest = new ChanceCommunityChest("community_chest");
-	community_chest.show();
+	// community_chest = new ChanceCommunityChest("community_chest");
+	// community_chest.show();
 
-	chance = new ChanceCommunityChest("chance");
-	chance.show();
+	// chance = new ChanceCommunityChest("chance");
+	// chance.show();
 }
 
 initialize();
