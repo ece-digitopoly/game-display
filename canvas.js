@@ -1,10 +1,13 @@
 var fps = 16;
-
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
-
 var screen_width = window.innerWidth;
 var screen_height = window.innerHeight;
+
+var canvas = document.getElementById('canvas');
+canvas.width = screen_width;
+canvas.height = screen_height;
+var ctx = canvas.getContext('2d');
+
+
 
 class ChanceCommunityChest{ //consider inheritance for this with a parent CardDeck class
 	constructor(card_type){
