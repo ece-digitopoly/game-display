@@ -1,27 +1,11 @@
 {
-  "name": "digitopoly-gui",
+  "name": "digitopoly-app",
   "version": "1.0.0",
-  "description": "An app to display game states of the Monopoly board",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
-    "test": "node main.js test"
+    "start": "electron . --no-sandbox"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/ece-digitopoly/game-display.git"
-  },
-  "keywords": [
-    "Monopoly",
-    "GUI",
-    "Raspberry",
-    "Pi",
-    "Graphics"
-  ],
-  "author": "Niraj Menon",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ece-digitopoly/game-display/issues"
-  },
-  "homepage": "https://github.com/ece-digitopoly/game-display#readme"
+  "devDependencies": {
+    "electron": "^6.0.8"
+  }
 }
