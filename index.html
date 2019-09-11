@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <head>
-    <link rel="stylesheet" href="css/fonts.css">
     <style>
         body {
             background-color: #e35cff;
@@ -8,11 +7,51 @@
         ::-webkit-scrollbar {
             display: none;
         }
+        @font-face { 
+            font-family: 'JosefinSans-BoldItalic';
+            src: url('fonts/JosefinSans-BoldItalic.ttf')  
+        }
+        @font-face { 
+            font-family: 'JosefinSans-Italic';
+            src: url('fonts/JosefinSans-Italic.ttf')      
+        }
+        @font-face { 
+            font-family: 'JosefinSans-Light';
+            src: url('fonts/JosefinSans-Light.ttf')    
+        }
+        @font-face { 
+            font-family: 'JosefinSans-SemiBoldItalic';
+            src: url('fonts/JosefinSans-SemiBoldItalic.ttf')  
+        }
+        @font-face { 
+            font-family: 'JosefinSans-ThinItalic';
+            src: url('fonts/JosefinSans-ThinItalic.ttf')
+        }
+        @font-face { 
+            font-family: 'JosefinSans-Bold';
+            src: url('fonts/JosefinSans-Bold.ttf')
+        }
+        @font-face { 
+            font-family: 'JosefinSans-LightItalic';
+            src: url('fonts/JosefinSans-LightItalic.ttf')
+        }
+        @font-face { 
+            font-family: 'JosefinSans-Regular';
+            src: url('fonts/JosefinSans-Regular.ttf')
+        }
+        @font-face { 
+            font-family: 'JosefinSans-SemiBold';
+            src: url('fonts/JosefinSans-SemiBold.ttf')
+        }
+        @font-face { 
+            font-family: 'JosefinSans-Thin';
+            src: url('fonts/JosefinSans-Thin.ttf')
+        }
     </style>
 </head>
 <body>
     <!-- <img src="splash.png" style="width: 100%; height=100%"> -->
-    <div id="welcome" style="height: 100%; vertical-align: middle; align-items: center; text-align: center; opacity: -1">
+    <div id="welcome" style="display:block; padding-top: 200px; height: 100%; vertical-align: middle; align-items: center; text-align: center; opacity: -1">
         <svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
             <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
             <g>
@@ -24,19 +63,61 @@
             </g>
             <g>
              <path id="svg_1" d="m16.7403,159.686l132.82492,-139.564l132.82492,139.564l-132.82492,139.564l-132.82492,-139.564z" opacity="0.4" stroke-width="1.5" stroke="#fff" fill="transparent"/>
-             <path id="svg_2" d="m16.7403,150l132.82492,-139.56399l132.82492,139.56399l-132.82492,139.564l-132.82492,-139.564z" opacity="0.4" stroke-width="1.5" stroke="#fff" fill="transparent"/>
-             <path id="svg_3" d="m16.7403,140.31399l132.82492,-139.56399l132.82492,139.56399l-132.82492,139.564l-132.82492,-139.564z" opacity="0.4" stroke-width="1.5" stroke="#fff" fill="transparent"/>
+             <path id="svg_2" d="m16.7403,150l132.82492,-139.56399l132.82492,139.56399l-132.82492,139.564l-132.82492,-139.564z" opacity="0.5" stroke-width="1.5" stroke="#fff" fill="transparent"/>
+             <path id="svg_3" d="m16.7403,140.31399l132.82492,-139.56399l132.82492,139.56399l-132.82492,139.564l-132.82492,-139.564z" opacity="0.6" stroke-width="1.5" stroke="#fff" fill="transparent"/>
             </g>
            </svg>
-           <p style="font-family: JosefinSans-Thin; font-size: 24px">DIGITOPOLY</p>
+           <p style="font-family: JosefinSans-Light; font-size: 24px; color: #fff">DIGITOPOLY</p>
+           <p style="font-family: JosefinSans-Light; font-size: 20px; color: #fff" id="status"></p>
+    </div>
+    <div id="gameboard" style="width: 100%; height: 100%; display: none; opacity: -1">
+
     </div>
     <script>
         load_disp = setInterval (function () {
             opacity = document.getElementById ("welcome").style ['opacity']
             if (opacity == 1)
+            {
+                setTimeout (flashInitialize, 2000)
                 clearInterval (load_disp)
+            }
             else
-                document.getElementById ("welcome").style ['opacity'] = parseFloat (opacity) + 0.1
-        }, 100)
+                document.getElementById ("welcome").style ['opacity'] = parseFloat (opacity) + 0.01
+        }, 1)
+
+        window.initializeCount = 0
+        function flashInitialize() {
+            if (window.initializeCount == 8)
+            {
+                document.getElementById ("status").innerHTML = ""
+                setTimeout (initDisappears, 500)
+            }
+            else
+            {
+                document.getElementById ("status").innerHTML = "Initializing" + '.'.repeat (initializeCount % 4)
+                window.initializeCount += 1
+                setTimeout (flashInitialize, 500)
+            }
+        }
+
+        function initDisappears() {
+            if (document.getElementById ("welcome").style ['opacity'] == '0')
+            {
+                document.getElementById ("welcome").style ['display'] = 'none'
+                setTimeout (showGameBoard, 1000)
+            }
+            else
+            {
+                loc = parseFloat (document.getElementById ("welcome").style ['padding-top'].replace ('px', ''))
+                loc -= 0.5
+                document.getElementById ("welcome").style ['padding-top'] = loc + 'px'
+                document.getElementById ("welcome").style ['opacity'] = parseFloat (document.getElementById ("welcome").style ['opacity']) - 0.01
+                setTimeout (initDisappears, 5)
+            }
+        }
+        
+        function showGameBoard() {
+            
+        }
     </script>
 </body>
