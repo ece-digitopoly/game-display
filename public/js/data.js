@@ -5,6 +5,7 @@ PROPERTY_DATA = [
     },
     {
         name: "Mediterranean Avenue",
+        short_name: "Med. Ave.",
         type: "Property",
         color: "#6f0000",
         subtype: "Regular",
@@ -17,6 +18,7 @@ PROPERTY_DATA = [
     },
 	{
         name: "Baltic Avenue",
+        short_name: "Bal. Ave.",
         type: "Property",
         color: "#6f0000",
         subtype: "Regular",
@@ -29,11 +31,13 @@ PROPERTY_DATA = [
     },
 	{
         name: "Reading Railroad", 
+        short_name: "Read. RR",
         type: "Property",
         subtype: "Railroad"
     },
     {
         name: "Central Avenue", 
+        short_name: "Cen. Ave.",
         type: "Property",
         subtype: "Regular",
         cost: 100,
