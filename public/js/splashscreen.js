@@ -41,7 +41,17 @@ function initDisappears() {
 }
 
 function showGameBoard() {
-    document.getElementById("gameboard").style ['opacity'] = 1;
-    document.getElementById("gameboard").style ['display'] = 'block';
     initialize();
+    document.getElementById("gameboard").style ['display'] = 'block';
+
+    load_canv = setInterval (function () {
+        opacity = document.getElementById ("gameboard").style ['opacity']
+        console.log(opacity);
+        if (opacity == 1)
+        {
+            clearInterval (load_canv)
+        }
+        else
+            document.getElementById ("gameboard").style ['opacity'] = parseFloat (opacity) + 0.01
+    }, 1)
 }

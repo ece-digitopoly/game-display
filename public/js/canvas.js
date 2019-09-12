@@ -211,10 +211,18 @@ class PlayerProfile{
 
 	drawPlayerImage(){
 		switch(this.player_number){
-			case 1 : ctx.drawImage(CAR_SPRITE, this.coords.x+20, this.coords.y+50); break;
-			case 2 : ctx.drawImage(SHIP_SPRITE, this.coords.x+20, this.coords.y+50); break;
-			case 3 : ctx.drawImage(BOOT_SPRITE, this.coords.x+20, this.coords.y+50); break;
-			case 4 : ctx.drawImage(DOG_SPRITE, this.coords.x+20, this.coords.y+50); break;
+			case 1: 
+				ctx.drawImage(CAR_SPRITE, this.coords.x+20, this.coords.y+50);
+				break;
+			case 2:
+				ctx.drawImage(SHIP_SPRITE, this.coords.x+20, this.coords.y+50);
+				break;
+			case 3:
+				ctx.drawImage(BOOT_SPRITE, this.coords.x+20, this.coords.y+50);
+				break;
+			case 4:
+				ctx.drawImage(DOG_SPRITE, this.coords.x+20, this.coords.y+50);
+				break;
 		}	
 	}
 
@@ -227,7 +235,7 @@ class PlayerProfile{
 		ctx.translate(transX, transY);
 		if(this.player_number == 2){
 			ctx.rotate(Math.PI/2);
-			ctx.translate(-transX, -transY+100);
+			ctx.translate(-transX, -transY+120);
 		}
 		else if(this.player_number == 3){
 			ctx.rotate(Math.PI);
@@ -235,7 +243,7 @@ class PlayerProfile{
 		}
 		else if(this.player_number == 4){
 			ctx.rotate(3*Math.PI/2);
-			ctx.translate(-transX, -transY+100);
+			ctx.translate(-transX, -transY+120);
 		}
 	}
 
@@ -252,7 +260,7 @@ class PlayerProfile{
 }
 
 function update(){
-	ctx.fillStyle = '#e35cff'
+	ctx.fillStyle = '#cee6d0'//'#e35cff'
 	ctx.fillRect(0, 0, screen_width, screen_height);
 
 	for(var i = 0; i < players.length; i++){
@@ -261,7 +269,7 @@ function update(){
 	
 }
 function initialize(){
-	ctx.fillStyle = '#e35cff';
+	ctx.fillStyle = '#cee6d0';//'#e35cff';
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	player_1 = new PlayerProfile("CAR", 1);
