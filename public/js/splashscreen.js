@@ -41,5 +41,7 @@ function initDisappears() {
 }
 
 function showGameBoard() {
-    
+    document.getElementById("gameboard").style ['opacity'] = 1;
+    document.getElementById("gameboard").style ['display'] = 'block';
+    initialize();
 }

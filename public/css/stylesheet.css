@@ -44,3 +44,13 @@ body {
     font-family: 'JosefinSans-Thin';
     src: url('../fonts/JosefinSans-Thin.ttf')
 }
+
+/*=========================
+  ===== Canvas Styles =====
+  =========================*/
+
+#canvas, #gameboard, body{
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
