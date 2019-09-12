@@ -1,5 +1,5 @@
 // Setting up Globals
-const FPS = 16;
+const FPS = 5;
 const screen_width = window.innerWidth > 1280 ? 1280 : window.innerWidth
 const screen_height = window.innerHeight > 1024 ? 1024 : window.innerHeight
 const LIGHT_FONT = 'JosefinSans-Light';
@@ -227,7 +227,7 @@ class PlayerProfile{
 		ctx.translate(transX, transY);
 		if(this.player_number == 2){
 			ctx.rotate(Math.PI/2);
-			ctx.translate(-transX, -transY+200);
+			ctx.translate(-transX, -transY+250);
 		}
 		else if(this.player_number == 3){
 			ctx.rotate(Math.PI);
@@ -235,7 +235,7 @@ class PlayerProfile{
 		}
 		else if(this.player_number == 4){
 			ctx.rotate(3*Math.PI/2);
-			ctx.translate(-transX, -transY+200);
+			ctx.translate(-transX, -transY+250);
 		}
 	}
 
