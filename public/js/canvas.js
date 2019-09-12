@@ -130,7 +130,7 @@ class Property{
 		if(this.subtype == "Regular"){
 			//Color Strip
 			ctx.fillStyle = this.color;
-			ctx.fillRect(small_coords.x+2, small_coords.y+2, width-4, 0.03*screen_height);
+			ctx.fillRect(small_coords.x+2, small_coords.y+2, width-4, 0.028*screen_height);
 
 			//Text on Strip
 			ctx.textAlign = 'center';
