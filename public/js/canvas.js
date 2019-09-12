@@ -263,14 +263,17 @@ function update(){
 	ctx.fillStyle = '#cee6d0'//'#e35cff'
 	ctx.fillRect(0, 0, screen_width, screen_height);
 
+	drawBorder();
 	for(var i = 0; i < players.length; i++){
 		players[i].show();
 	}
 	
 }
 function initialize(){
-	ctx.fillStyle = '#cee6d0';//'#e35cff';
+	ctx.fillStyle = '#cee6d0';
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	drawBorder();
 
 	player_1 = new PlayerProfile("CAR", 1);
 	player_2 = new PlayerProfile("SHIP", 2);
@@ -296,3 +299,37 @@ function initialize(){
 	}, 5000);
 }
 
+function drawBorder(){
+	ctx.strokeStyle = 'black';
+
+	drawTopRow();
+}
+
+function drawTopRow(){
+	let top_box_height = screen_height/20;
+	let top_box_width = screen_width/10;
+
+	let step = screen_width/10;
+
+	// Red Properties
+	ctx.fillStyle = 'red';
+	ctx.fillRect(0, 0, top_box_width, top_box_height);
+	ctx.strokeRect(0, 0, top_box_width, top_box_height);
+
+	ctx.fillRect(step*2, 0, top_box_width, top_box_height);
+	ctx.strokeRect(step*2, 0, top_box_width, top_box_height);
+
+	ctx.fillRect(step*3, 0, top_box_width, top_box_height);
+	ctx.strokeRect(step*3, 0, top_box_width, top_box_height);
+
+	// Yellow Properties
+	ctx.fillStyle = 'yellow';
+	ctx.fillRect(step*5, 0, top_box_width, top_box_height);
+	ctx.strokeRect(step*5, 0, top_box_width, top_box_height);
+	
+	ctx.fillRect(step*6, 0, top_box_width, top_box_height);
+	ctx.strokeRect(step*6, 0, top_box_width, top_box_height);
+	
+	ctx.fillRect(step*8, 0, top_box_width, top_box_height);
+	ctx.strokeRect(step*8, 0, top_box_width, top_box_height);
+}
