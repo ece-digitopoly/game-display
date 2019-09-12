@@ -1,20 +1,24 @@
-const {app, BrowserWindow} = require ('electron')
+const electron = require ('electron')
+const {app, BrowserWindow} = electron
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
 function createWindow () {
   // Create the browser window.
+  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+
+  setW = width > 1280 ? 1280 : width
+  setH = height > 1024 ? 1024 : height
+
   win = new BrowserWindow({
-    width: 800,
-    height: 800,
+    width: setW,
+    height: setH,
     webPreferences: {
       nodeIntegration: true
     },
     frame: false
   })
-
-  win.maximize()
 
   // and load the index.html of the app.
   win.loadFile('index.html')
