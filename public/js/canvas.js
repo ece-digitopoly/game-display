@@ -235,7 +235,7 @@ class PlayerProfile{
 		ctx.translate(transX, transY);
 		if(this.player_number == 2){
 			ctx.rotate(Math.PI/2);
-			ctx.translate(-transX, -transY+120);
+			ctx.translate(-transX, -transY+115);
 		}
 		else if(this.player_number == 3){
 			ctx.rotate(Math.PI);
@@ -243,7 +243,7 @@ class PlayerProfile{
 		}
 		else if(this.player_number == 4){
 			ctx.rotate(3*Math.PI/2);
-			ctx.translate(-transX, -transY+120);
+			ctx.translate(-transX, -transY+115);
 		}
 	}
 
@@ -305,6 +305,7 @@ function drawBorder(){
 	drawTopRow();
 	drawBottomRow();
 	drawLeftRow();
+	drawRightRow();
 }
 
 function drawTopRow(){
@@ -376,27 +377,21 @@ function drawBottomRow(){
 	ctx.strokeRect(step*8, screen_height-top_box_height, top_box_width, top_box_height);
 
 	//Non-Properties
-	ctx.fillStyle = 'rgba(0,0,0,0)';
-	ctx.fillRect(step*2, screen_height-top_box_height, top_box_width, top_box_height);
 	ctx.strokeRect(step*2, screen_height-top_box_height, top_box_width, top_box_height);
-	
-	ctx.fillRect(step*4, screen_height-top_box_height, top_box_width, top_box_height);
 	ctx.strokeRect(step*4, screen_height-top_box_height, top_box_width, top_box_height);
 
-	ctx.fillRect(step*5, screen_height-top_box_height, top_box_width, top_box_height);
 	ctx.strokeRect(step*5, screen_height-top_box_height, top_box_width, top_box_height);
 	
-	ctx.fillRect(step*7, screen_height-top_box_height, top_box_width, top_box_height);
 	ctx.strokeRect(step*7, screen_height-top_box_height, top_box_width, top_box_height);
 
 	ctx.translate(-top_box_width/2, 0);
 }
 
 function drawLeftRow(){
-	let box_height = screen_width/10;
-	let box_width = screen_height/20;
+	let box_height = screen_width/11.25;
+	let box_width = screen_height/16.25;
 
-	let step = screen_width/10;
+	let step = screen_width/11.25;
 
 	// Orange Properties
 	ctx.fillStyle = '#ffb347';
@@ -409,25 +404,52 @@ function drawLeftRow(){
 	ctx.fillRect(0, step*3, box_width, box_height);
 	ctx.strokeRect(0, step*3, box_width, box_height);
 
-	// // Pink Properties
-	// ctx.fillStyle = 'yellow';
-	// ctx.fillRect(step*5, 0, box_width, box_height);
-	// ctx.strokeRect(step*5, 0, box_width, box_height);
+	// Pink Properties
+	ctx.fillStyle = 'e35cff';
+	ctx.fillRect(0, step*5, box_width, box_height);
+	ctx.strokeRect(0, step*5, box_width, box_height);
 	
-	// ctx.fillRect(step*6, 0, box_width, box_height);
-	// ctx.strokeRect(step*6, 0, box_width, box_height);
+	ctx.fillRect(0, step*6, box_width, box_height);
+	ctx.strokeRect(0, step*6, box_width, box_height);
 	
-	// ctx.fillRect(step*8, 0, box_width, box_height);
-	// ctx.strokeRect(step*8, 0, box_width, box_height);
+	ctx.fillRect(0, step*8, box_width, box_height);
+	ctx.strokeRect(0, step*8, box_width, box_height);
 
-	// //Non-Properties
-	// ctx.fillStyle = 'rgba(0,0,0,0)';
-	// ctx.fillRect(step, 0, box_width, box_height);
-	// ctx.strokeRect(step, 0, box_width, box_height);
+	//Non-Properties
+	ctx.strokeRect(0, step*2, box_width, box_height);
+	ctx.strokeRect(0, step*4, box_width, box_height);
+	ctx.strokeRect(0, step*7, box_width, box_height);
+}
+
+function drawRightRow(){
+	let box_height = screen_width/11.25;
+	let box_width = screen_height/16.25;
+
+	let step = screen_width/11.25;
+
+	// Green Properties
+	ctx.fillStyle = 'green';
+	ctx.fillRect(screen_width-box_width, 0, box_width, box_height);
+	ctx.strokeRect(screen_width-box_width, 0, box_width, box_height);
+
+	ctx.fillRect(screen_width-box_width, step, box_width, box_height);
+	ctx.strokeRect(screen_width-box_width, step, box_width, box_height);
+
+	ctx.fillRect(screen_width-box_width, step*3, box_width, box_height);
+	ctx.strokeRect(screen_width-box_width, step*3, box_width, box_height);
+
+	// Dark Blue Properties
+	ctx.fillStyle = '#003366';
 	
-	// ctx.fillRect(step*4, 0, box_width, box_height);
-	// ctx.strokeRect(step*4, 0, box_width, box_height);
+	ctx.fillRect(screen_width-box_width, step*6, box_width, box_height);
+	ctx.strokeRect(screen_width-box_width, step*6, box_width, box_height);
 	
-	// ctx.fillRect(step*7, 0, box_width, box_height);
-	// ctx.strokeRect(step*7, 0, box_width, box_height);
+	ctx.fillRect(screen_width-box_width, step*8, box_width, box_height);
+	ctx.strokeRect(screen_width-box_width, step*8, box_width, box_height);
+
+	//Non-Properties
+	ctx.strokeRect(screen_width-box_width, step*2, box_width, box_height);
+	ctx.strokeRect(screen_width-box_width, step*4, box_width, box_height);
+	ctx.strokeRect(screen_width-box_width, step*5, box_width, box_height);
+        ctx.strokeRect(screen_width-box_width, step*7, box_width, box_height);
 }
