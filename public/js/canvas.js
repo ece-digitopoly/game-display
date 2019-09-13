@@ -405,7 +405,7 @@ function drawLeftRow(){
 	ctx.strokeRect(0, step*3, box_width, box_height);
 
 	// Pink Properties
-	ctx.fillStyle = 'e35cff';
+	ctx.fillStyle = '#e35cff';
 	ctx.fillRect(0, step*5, box_width, box_height);
 	ctx.strokeRect(0, step*5, box_width, box_height);
 	
@@ -451,5 +451,5 @@ function drawRightRow(){
 	ctx.strokeRect(screen_width-box_width, step*2, box_width, box_height);
 	ctx.strokeRect(screen_width-box_width, step*4, box_width, box_height);
 	ctx.strokeRect(screen_width-box_width, step*5, box_width, box_height);
-        ctx.strokeRect(screen_width-box_width, step*7, box_width, box_height);
+	ctx.strokeRect(screen_width-box_width, step*7, box_width, box_height);
 }
