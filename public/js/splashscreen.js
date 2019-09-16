@@ -2,7 +2,8 @@ load_disp = setInterval (function () {
     opacity = document.getElementById ("welcome").style ['opacity']
     if (opacity == 1)
     {
-        setTimeout (flashInitialize, 1500)
+        // setTimeout (flashInitialize, 1500)
+        setTimeout (initDisappears, 1500)
         clearInterval (load_disp)
     }
     else
@@ -25,19 +26,47 @@ function flashInitialize() {
 }
 
 function initDisappears() {
-    if (document.getElementById ("welcome").style ['opacity'] == '0')
+    if (document.getElementById ("welcome").style ['padding-top'] == '50px')
     {
-        document.getElementById ("welcome").style ['display'] = 'none'
-        setTimeout (showGameBoard, 1000)
+        document.getElementById ("mainmenu").style ['display'] = 'block';
+        setTimeout (showMainMenu, 500)
     }
     else
     {
         loc = parseFloat (document.getElementById ("welcome").style ['padding-top'].replace ('px', ''))
         loc -= 0.5
+        console.log (loc)
         document.getElementById ("welcome").style ['padding-top'] = loc + 'px'
-        document.getElementById ("welcome").style ['opacity'] = parseFloat (document.getElementById ("welcome").style ['opacity']) - 0.01
-        setTimeout (initDisappears, 5)
+        setTimeout (initDisappears, (150.0 - loc) / 15.0)
     }
+}
+
+function showMainMenu() {
+    if (document.getElementById ("mainmenu").style ['opacity'] == '1')
+    {
+        setTimeout (waitForInput, 1000)
+    }
+    else
+    {
+        loc = parseFloat (document.getElementById ("welcome").style ['padding-top'].replace ('px', ''))
+        loc += 1.0
+        if (document.getElementById ("mainmenu").style ['opacity'] >= 0)
+            document.getElementById ("mainmenu").style ['padding-top'] = loc + 'px'
+        document.getElementById ("mainmenu").style ['opacity'] = parseFloat (document.getElementById ("mainmenu").style ['opacity']) + 0.01
+        setTimeout (showMainMenu, 3)
+    }
+}
+
+function waitForInput() {
+    console.log ("waiting for input")
+    init_uart()
+    try {
+        window.stm32.write ("Test message")
+    }
+    catch (ex) {
+        console.log ("Couldn't load library for some reason.")
+    }
+
 }
 
 function showGameBoard() {

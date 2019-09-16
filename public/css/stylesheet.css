@@ -1,9 +1,44 @@
 body {
-    background-color: #e35cff;
+    background-color: #3ba86e;
 }
+
 ::-webkit-scrollbar {
     display: none;
 }
+
+.btn-mainmenu {
+    width: 200px;
+    height: 75px;
+    font-family: JosefinSans-Light;
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #fff;
+    background-color: transparent;
+    border: 1px solid #7ff;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.btn-mainmenu:hover {
+    width: 200px;
+    height: 75px;
+    font-family: JosefinSans-Light;
+    font-size: 20px;
+    color: #fff;
+    background-color: #5dd;
+    border: 1px solid #7ff;
+    border-radius: 10px;
+}
+
+#mainmenu {
+    width: 200px; 
+    padding-left: calc(57.8% - 200px);
+    height: 100%; 
+    vertical-align: middle; 
+    align-items: center; 
+    text-align: center; 
+}
+
 @font-face { 
     font-family: 'JosefinSans-BoldItalic';
     src: url('../fonts/JosefinSans-BoldItalic.ttf')  
