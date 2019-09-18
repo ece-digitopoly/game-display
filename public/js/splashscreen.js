@@ -61,7 +61,7 @@ function waitForInput() {
     if (document.getElementById ("welcome").style ['opacity'] == '0')
     {
         document.getElementById ("welcome").style ['display'] = 'none'
-        id = setTimeout (showGameBoard, 500)
+        id = setTimeout (showGameBoard, 250)
     }
     else
     {
