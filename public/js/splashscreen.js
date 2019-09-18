@@ -44,7 +44,7 @@ function initDisappears() {
 function showMainMenu() {
     if (document.getElementById ("mainmenu").style ['opacity'] == '1')
     {
-        setTimeout (waitForInput, 1000)
+        // setTimeout (waitForInput, 1000)
     }
     else
     {
@@ -58,15 +58,16 @@ function showMainMenu() {
 }
 
 function waitForInput() {
-    console.log ("waiting for input")
-    init_uart()
-    try {
-        window.stm32.write ("Test message")
+    if (document.getElementById ("welcome").style ['opacity'] == '0')
+    {
+        document.getElementById ("welcome").style ['display'] = 'none'
+        id = setTimeout (showGameBoard, 1000)
     }
-    catch (ex) {
-        console.log ("Couldn't load library for some reason.")
+    else
+    {
+        document.getElementById ("welcome").style ['opacity'] = parseFloat (document.getElementById ("welcome").style ['opacity']) - 0.01
+        id = setTimeout (waitForInput, 3)
     }
-
 }
 
 function showGameBoard() {
