@@ -28,7 +28,7 @@ function flashInitialize() {
 function initDisappears() {
     if (document.getElementById ("welcome").style ['padding-top'] == '50px')
     {
-        document.getElementById ("mainmenu").style ['display'] = 'block';
+        document.getElementById ("mainmenu").style ['display'] = 'inline';
         setTimeout (showMainMenu, 500)
     }
     else
