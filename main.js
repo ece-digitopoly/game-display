@@ -8,8 +8,8 @@ function createWindow () {
   // Create the browser window.
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
 
-  setW = width > 1280 ? 1280 : width
-  setH = height > 1024 ? 1024 : height
+  setW = width > 1050 ? 1050 : width
+  setH = height > 800 ? 800 : height
 
   win = new BrowserWindow({
     width: setW,
