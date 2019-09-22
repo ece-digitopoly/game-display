@@ -35,7 +35,6 @@ function initDisappears() {
     {
         loc = parseFloat (document.getElementById ("welcome").style ['padding-top'].replace ('px', ''))
         loc -= 0.5
-        console.log (loc)
         document.getElementById ("welcome").style ['padding-top'] = loc + 'px'
         setTimeout (initDisappears, (150.0 - loc) / 15.0)
     }

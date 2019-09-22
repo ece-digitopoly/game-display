@@ -6,14 +6,14 @@ body {
     display: none;
 }
 
-.btn-mainmenu {
+.btn-mainmenu, .btn-nhc-anew, .btn-nhc-load, .btn-nhc-high, .btn-nhc-cred {
     width: 200px;
     height: 50px;
     font-family: JosefinSans-Light;
     font-size: 18px;
     margin-left: 20vw;
     margin-right: 20vw;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     color: #fff;
     background-color: transparent;
     border: 1px solid #7ff;
@@ -21,7 +21,7 @@ body {
     transition: 0.3s;
 }
 
-.btn-mainmenu:hover {
+.btn-mainmenu-hover, .btn-hc-anew, .btn-hc-load, .btn-hc-high, .btn-hc-cred {
     width: 200px;
     height: 50px;
     font-family: JosefinSans-Light;

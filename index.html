@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" type="text/css" href="public/css/stylesheet.css">
+    <script>
+    const $ = require ('jquery')
+    </script>
 </head>
 <body>
-    <div style="padding-top: 30px"></div>
+    <div style="padding-top: 25px"></div>
     <div id="welcome" style="display:block; padding-top: 200px; height: 100%; align-items: center; text-align: center; opacity: -1">
         <svg xmlns="http://www.w3.org/2000/svg" width="auto" height="200px" viewBox="0 0 300 300">
             <g>
@@ -18,13 +21,15 @@
              <path id="svg_3" d="m16.7403,140.31399l132.82492,-139.56399l132.82492,139.56399l-132.82492,139.564l-132.82492,-139.564z" opacity="0.6" stroke-width="1.5" stroke="#fff" fill="transparent"/>
             </g>
            </svg>
+           <div style="padding-bottom: 20px"></div>
            <p style="font-family: JosefinSans-Light; font-size: 28px; color: #fff">DIGITOPOLY</p>
-           <div id="mainmenu" style="display: none; opacity: -1;">
+           <div style="padding-top: 5px"></div>
+           <div id="mainmenu" style="display: none; padding-top: 50px; opacity: -1;">
                 <row><col><p style="font-family: JosefinSans-Light; font-size: 28px; color: #fff">Select an option!</p></col></row>
-                <row><col><button class="btn-mainmenu" onclick="javascript:waitForInput()">New Game</button></col></row>
-                <row><col><button class="btn-mainmenu">Load Game</button></col></row>
-                <row><col><button class="btn-mainmenu">High Scores</button></col></row>
-                <row><col><button class="btn-mainmenu">Credits</button></col></row>
+                <row><col><button class="btn-mainmenu btn-nhc-anew" id="btn-anew" onmouseenter="btnhover(0)" onmouseleave="btnhover(4)" onclick="javascript:waitForInput()">New Game</button></col></row>
+                <row><col><button class="btn-mainmenu btn-nhc-load" id="btn-load" onmouseenter="btnhover(1)" onmouseleave="btnhover(5)">Load Game</button></col></row>
+                <row><col><button class="btn-mainmenu btn-nhc-high" id="btn-high" onmouseenter="btnhover(2)" onmouseleave="btnhover(6)">High Scores</button></col></row>
+                <row><col><button class="btn-mainmenu btn-nhc-cred" id="btn-cred" onmouseenter="btnhover(3)" onmouseleave="btnhover(7)">Credits</button></col></row>
             </div>
     </div>
     <div id="gameboard" style="width: 100%; height: 100%; display: none; opacity: 0">
