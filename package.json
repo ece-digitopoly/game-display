@@ -6,9 +6,11 @@
     "start": "electron ."
   },
   "devDependencies": {
-    "electron": "^6.0.10"
+    "electron": "^6.0.10",
+    "electron-rebuild": "^1.8.6"
   },
   "dependencies": {
-    "jquery": "^3.4.1"
+    "jquery": "^3.4.1",
+    "raspi-serial": "^5.1.1"
   }
 }
