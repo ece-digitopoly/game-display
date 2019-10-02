@@ -1,5 +1,5 @@
 const electron = require ('electron')
-const serial = require ('raspi-serial')
+const serial = require ('raspi-serial') // require in here because apparently loading only in the HTML will load the wrong version or something idk
 const {app, BrowserWindow} = electron
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -9,8 +9,8 @@ function createWindow () {
   // Create the browser window.
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
 
-  setW = width > 1000 ? 1000 : width
-  setH = height > 800 ? 800 : height
+  setW = width > 1080 ? 1080 : width
+  setH = height > 870 ? 870 : height
 
   win = new BrowserWindow({
     width: setW,
@@ -18,7 +18,7 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: true
     },
-    frame: false
+    // frame: false
   })
 
   // and load the index.html of the app.

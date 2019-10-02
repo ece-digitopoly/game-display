@@ -43,6 +43,8 @@ function initDisappears() {
 function showMainMenu() {
     if (document.getElementById ("mainmenu").style ['opacity'] == '1')
     {
+        window.gameState = 'MAIN'
+        btnhover (0);
         // setTimeout (waitForInput, 1000)
     }
     else
@@ -53,6 +55,20 @@ function showMainMenu() {
             document.getElementById ("mainmenu").style ['padding-top'] = loc + 'px'
         document.getElementById ("mainmenu").style ['opacity'] = parseFloat (document.getElementById ("mainmenu").style ['opacity']) + 0.01
         setTimeout (showMainMenu, 3)
+    }
+}
+
+function mainMenuScroll (dir) {
+    btnhover (window.mainMenuSelectedOption + 4)
+    switch (window.mainMenuSelectedOption) {    
+        case 0:
+            btnhover (dir == 'up' ? 3 : 1); break;
+        case 1:
+            btnhover (dir == 'up' ? 0 : 2); break;
+        case 2:
+            btnhover (dir == 'up' ? 1 : 3); break;
+        case 3:
+            btnhover (dir == 'up' ? 2 : 0); break;
     }
 }
 
@@ -70,6 +86,7 @@ function waitForInput() {
 }
 
 function showGameBoard() {
+    window.gameState = 'START'
     initialize();
     document.getElementById("gameboard").style ['display'] = 'block';
 
