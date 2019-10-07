@@ -45,7 +45,6 @@ function showMainMenu() {
     {
         window.gameState = 'MAIN'
         btnhover (0);
-        // setTimeout (waitForInput, 1000)
     }
     else
     {
@@ -71,6 +70,34 @@ function mainMenuScroll (dir) {
             btnhover (dir == 'up' ? 2 : 0); break;
     }
 }
+
+function showNewGame() {
+    if (document.getElementById ("welcome").style ['opacity'] == '0')
+    {
+        document.getElementById ("welcome").style ['display'] = 'none'
+        document.getElementById ("newgame").style ['display'] = 'block'
+        showNewGamePhaseIn()
+    }
+    else
+    {
+        document.getElementById ("welcome").style ['opacity'] = parseFloat (document.getElementById ("welcome").style ['opacity']) - 0.01
+        id = setTimeout (showNewGame, 3)
+    }
+}
+
+function showNewGamePhaseIn() {
+    if (document.getElementById ("newgame").style ['opacity'] == '1')
+    {
+        return
+    }
+    else
+    {
+        document.getElementById ("newgame").style ['opacity'] = parseFloat (document.getElementById ("newgame").style ['opacity']) + 0.01
+        id = setTimeout (showNewGamePhaseIn, 3)
+    }
+}
+
+// Legacy function - remove after deployment //
 
 function waitForInput() {
     if (document.getElementById ("welcome").style ['opacity'] == '0')

@@ -50,16 +50,25 @@ function btnhover (btn) {
 function init_uart () {
     window.stm32 = new Serial({baudRate: 115200});
     window.stm32.open(() => {
-        message = ""
         window.stm32.on('data', (data) => {
             try {
-                message = JSON.parse (message + data.toString().replace (/\0/g, ''))
-		console.log (message)
-                uart_control (message)
-                message = ""
+                window.stm32.message = JSON.parse (window.stm32.message + data.toString().replace (/\0/g, ''))
+                console.log ("Parsed as JSON: " + JSON.stringify (window.stm32.message))
+                uart_control (window.stm32.message)
+                window.stm32.message = ""
             }
             catch (ex) {
-                message += data.toString().replace (/\0/g, '')
+                console.log (data.toString())
+                window.stm32.message += data.toString().replace (/\0/g, '')
+                if (window.stm32.message.includes ("}")) {
+                    try {
+                        uart_control (JSON.parse (window.stm32.message))
+                    }
+                    catch (ex) {
+                        console.log ("Full message received, but still got an error parsing: " + window.stm32.message)
+                    }
+                    window.stm32.message = ""
+                }
             }
         });
     });
@@ -73,7 +82,37 @@ function uart_control (stm32_json) {
                     mainMenuScroll (stm32_json ['direction'])
                 break;
             }
-            break;
+        break;
+        case 'poweroff':
+            document.getElementById("welcome").style.display = "none";
+            document.getElementById("gameboard").style.display = "none";
+            document.getElementById("div_poweroff").style.opacity = 0
+            document.getElementById("div_poweroff").style.display = "block";
+            openSettingsOpacityInterval = setInterval (function () {
+                if (document.getElementById("div_poweroff").style.opacity == 1.0)
+                    clearInterval (openSettingsOpacityInterval)
+                else
+                {
+                    opacity = parseFloat (document.getElementById("div_poweroff").style.opacity)
+                    document.getElementById("div_poweroff").style.opacity = opacity + 0.1
+                }
+            }, 4)
+            setTimeout (function () {
+                location.reload()
+            }, 3000);
+        break;
+        case 'click':
+            switch (window.gameState) {
+                case 'MAIN':
+                    switch (window.mainMenuSelectedOption) {
+                        case 0: showNewGame(); break;
+                        case 1: showLoadGame(); break;
+                        case 2: showHighScore(); break;
+                        case 3: showCredits(); break;
+                    }
+                break;
+            }
+        break;
     }
 }
 
