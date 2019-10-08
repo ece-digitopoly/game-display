@@ -28,6 +28,19 @@ function btnhover (btn) {
         case 3: 
             $(".btn-nhc-cred").toggleClass ("btn-nhc-cred btn-hc-cred"); window.mainMenuSelectedOption = 3
             break;
+        /* Turn on textarea hover */
+        case 8: 
+            $(".turnnumber").toggleClass ("turnnumber turnnumber-hover"); window.newGameSelectedOption = 0
+            break;
+        case 9: 
+            $(".playerfund").toggleClass ("playerfund playerfund-hover"); window.newGameSelectedOption = 1
+            break;
+        case 10: 
+            $(".bankfund").toggleClass ("bankfund bankfund-hover"); window.newGameSelectedOption = 2
+            break;
+        case 11:
+            $(".btn-nhc-createnewgame").toggleClass ("btn-nhc-createnewgame btn-hc-createnewgame"); window.newGameSelectedOption = 3
+        break;
         /** **/
 
         /* Turn off button hover */
@@ -42,6 +55,19 @@ function btnhover (btn) {
             break;
         case 7: 
             $(".btn-hc-cred").toggleClass ("btn-hc-cred btn-nhc-cred")
+            break;
+        /* Turn off textarea hover */
+        case 12: 
+            $(".turnnumber-hover").toggleClass ("turnnumber-hover turnnumber")
+            break;
+        case 13: 
+            $(".playerfund-hover").toggleClass ("playerfund-hover playerfund")
+            break;
+        case 14: 
+            $(".bankfund-hover").toggleClass ("bankfund-hover bankfund")
+            break;
+        case 15: 
+            $(".btn-hc-createnewgame").toggleClass ("btn-hc-createnewgame btn-nhc-createnewgame")
             break;
         /** **/
     }
@@ -81,6 +107,9 @@ function uart_control (stm32_json) {
                 case 'MAIN':
                     mainMenuScroll (stm32_json ['direction'])
                 break;
+                case 'NEWGAME':
+                    newGameScroll (stm32_json ['direction'])
+                break;
             }
         break;
         case 'poweroff':
@@ -110,6 +139,23 @@ function uart_control (stm32_json) {
                         case 2: showHighScore(); break;
                         case 3: showCredits(); break;
                     }
+                break;
+                case 'NEWGAME':
+                    switch (window.newGameSelectedOption) {
+                        case 0: if (document.getElementsByClassName ("").classlist) {
+
+                        }
+                        break;
+                        case 1: if (document.getElementsByClassName ("").classlist) {
+
+                        }
+                        break;
+                        case 2: if (document.getElementsByClassName ("").classlist) {
+
+                        }
+                        break;
+                        case 3: hideNewGamePhaseOut(); showGameBoard(); break;
+                    }  
                 break;
             }
         break;

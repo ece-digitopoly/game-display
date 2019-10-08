@@ -71,9 +71,40 @@ function mainMenuScroll (dir) {
     }
 }
 
+function newGameScroll (dir) {
+    btnhover (window.newGameSelectedOption + 12)
+    switch (window.newGameSelectedOption) {    
+        case 0: // 8
+            btnhover (dir == 'up' ? 11 : 9); break;
+        case 1: // 9
+            btnhover (dir == 'up' ? 8 : 10); break;
+        case 2: // 10
+            btnhover (dir == 'up' ? 9 : 11); break;
+        case 3: // 11
+            btnhover (dir == 'up' ? 10 : 8); break;
+    }
+}
+
+function changeNewGameTextbox (ch) {
+    switch (ch) {
+        case 0:
+            
+            break;
+
+        case 1:
+            break;
+
+        case 2:
+            break;
+    }
+}
+
 function showNewGame() {
     if (document.getElementById ("welcome").style ['opacity'] == '0')
     {
+        btnhover (8)
+        window.gameState = 'NEWGAME'
+
         document.getElementById ("welcome").style ['display'] = 'none'
         document.getElementById ("newgame").style ['display'] = 'block'
         showNewGamePhaseIn()
@@ -81,7 +112,7 @@ function showNewGame() {
     else
     {
         document.getElementById ("welcome").style ['opacity'] = parseFloat (document.getElementById ("welcome").style ['opacity']) - 0.01
-        id = setTimeout (showNewGame, 3)
+        id = setTimeout (showNewGame, 2)
     }
 }
 
@@ -93,7 +124,19 @@ function showNewGamePhaseIn() {
     else
     {
         document.getElementById ("newgame").style ['opacity'] = parseFloat (document.getElementById ("newgame").style ['opacity']) + 0.01
-        id = setTimeout (showNewGamePhaseIn, 3)
+        id = setTimeout (showNewGamePhaseIn, 2)
+    }
+}
+
+function hideNewGamePhaseOut() {
+    if (document.getElementById ("newgame").style ['opacity'] == '0')
+    {
+        return
+    }
+    else
+    {
+        document.getElementById ("newgame").style ['opacity'] = parseFloat (document.getElementById ("newgame").style ['opacity']) - 0.01
+        id = setTimeout (showNewGamePhaseIn, 2)
     }
 }
 
