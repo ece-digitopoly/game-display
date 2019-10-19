@@ -143,7 +143,7 @@ function uart_control (stm32_json) {
                 case 'NEWGAME':
                     switch (window.newGameSelectedOption) {
                         case 0: if (document.getElementsByClassName ("").classlist) {
-
+                            
                         }
                         break;
                         case 1: if (document.getElementsByClassName ("").classlist) {
