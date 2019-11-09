@@ -16,6 +16,7 @@ const DOG_SPRITE = new Image();
 DOG_SPRITE.src = 'public/images/dog.png';
 
 var players = new Array();
+var dialog_box;
 
 var regFont = new FontFace(REGULAR_FONT, 'url(public/fonts/JosefinSans-Regular.ttf)');  
 regFont.load().then(function(font){  
@@ -167,6 +168,41 @@ class Property{
 		}
 	}
 }
+
+class DialogBox{
+    constructor(text, options){
+        this.text = text;
+        this.options = options;
+ 
+        this.selected_option = 0;
+       
+        this.width = 0.5*screen_width;
+        this.height = 0.15*(this.options.length + 1)*screen_height;
+        this.coords = new Coords(0.5*screen_width-this.width/2, 0.5*screen_height-this.height/2);
+    }
+ 
+    show(){
+        //Rounded BG Box
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+        roundRect(ctx, this.coords.x, this.coords.y, this.width, this.height, 10, true, false);
+ 
+        //Dialog Text
+        ctx.font = `30px "${REGULAR_FONT}"`;
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.fillText(this.text, this.coords.x+this.width/2, this.coords.y+40);
+ 
+        for(var i = 0; i < this.options.length; i++){
+            console.log("i is: ", i);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            roundRect(ctx, this.coords.x+this.width/2-0.3*screen_width/2, this.coords.y+(i+1)*0.15*screen_height, 0.3*screen_width, 0.1*screen_height, 10, i == this.selected_option ? true : false, true);
+            ctx.font = `25px "${REGULAR_FONT}"`;
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.fillText(this.options[i], this.coords.x+this.width/2, this.coords.y+(i+1)*0.15*screen_height+0.05*screen_height+10);
+        }
+    }
+}
 class PlayerProfile{
 	constructor(player_name, player_number){
 		this.player_name = player_name;
@@ -267,6 +303,7 @@ function update(){
 	for(var i = 0; i < players.length; i++){
 		players[i].show();
 	}
+	dialog_box.show();
 	
 }
 function initialize(){
@@ -287,6 +324,8 @@ function initialize(){
 	prop2 = new Property(6, player_1);
 	player_1.properties.push(prop1);
 	player_1.properties.push(prop2);
+
+	dialog_box = new DialogBox("You don't have enough funds.", ["Mortgage", "Declare Bankruptcy"])
 	
 	setInterval(update, 1000/FPS);
 	setInterval(function(){
