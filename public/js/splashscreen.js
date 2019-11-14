@@ -10,21 +10,6 @@ load_disp = setInterval (function () {
         document.getElementById ("welcome").style ['opacity'] = parseFloat (opacity) + 0.01
 }, 1)
 
-window.initializeCount = 0
-function flashInitialize() {
-    if (window.initializeCount == 8)
-    {
-        document.getElementById ("status").innerHTML = ""
-        setTimeout (initDisappears, 500)
-    }
-    else
-    {
-        document.getElementById ("status").innerHTML = "Initializing" + '.'.repeat (initializeCount % 4)
-        window.initializeCount += 1
-        setTimeout (flashInitialize, 500)
-    }
-}
-
 function initDisappears() {
     if (document.getElementById ("welcome").style ['padding-top'] == '50px')
     {
@@ -128,30 +113,33 @@ function showNewGamePhaseIn() {
     }
 }
 
-function hideNewGamePhaseOut() {
+function hideNewGamePhaseOutToGameBoard() {
     if (document.getElementById ("newgame").style ['opacity'] == '0')
     {
+        document.getElementById ("newgame").style ['display'] = 'none'
+        showGameBoard()
         return
     }
     else
     {
         document.getElementById ("newgame").style ['opacity'] = parseFloat (document.getElementById ("newgame").style ['opacity']) - 0.01
-        id = setTimeout (showNewGamePhaseIn, 2)
+        id = setTimeout (hideNewGamePhaseOutToGameBoard, 2)
     }
 }
 
-// Legacy function - remove after deployment //
-
-function waitForInput() {
-    if (document.getElementById ("welcome").style ['opacity'] == '0')
+function hideNewGamePhaseOutToMainMenu() {
+    if (document.getElementById ("newgame").style ['opacity'] == '0')
     {
-        document.getElementById ("welcome").style ['display'] = 'none'
-        id = setTimeout (showGameBoard, 250)
+        document.getElementById ("newgame").style ['display'] = 'none'
+        document.getElementById ("welcome").style ['display'] = 'block'
+        showMainMenu()
+        return
     }
     else
     {
-        document.getElementById ("welcome").style ['opacity'] = parseFloat (document.getElementById ("welcome").style ['opacity']) - 0.01
-        id = setTimeout (waitForInput, 3)
+        document.getElementById ("newgame").style ['opacity'] = parseFloat (document.getElementById ("newgame").style ['opacity']) - 0.01
+        document.getElementById ("welcome").style ['opacity'] = parseFloat (document.getElementById ("welcome").style ['opacity']) + 0.01
+        id = setTimeout (hideNewGamePhaseOutToMainMenu, 2)
     }
 }
 
@@ -170,4 +158,19 @@ function showGameBoard() {
         else
             document.getElementById ("gameboard").style ['opacity'] = parseFloat (opacity) + 0.01
     }, 1)
+}
+
+// Legacy function - remove after deployment //
+
+function waitForInput() {
+    if (document.getElementById ("welcome").style ['opacity'] == '0')
+    {
+        document.getElementById ("welcome").style ['display'] = 'none'
+        id = setTimeout (showGameBoard, 250)
+    }
+    else
+    {
+        document.getElementById ("welcome").style ['opacity'] = parseFloat (document.getElementById ("welcome").style ['opacity']) - 0.01
+        id = setTimeout (waitForInput, 3)
+    }
 }

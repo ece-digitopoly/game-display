@@ -6,7 +6,7 @@ body {
     display: none;
 }
 
-.btn-mainmenu, .btn-nhc-anew, .btn-nhc-load, .btn-nhc-high, .btn-nhc-cred, .btn-nhc-createnewgame {
+.btn-mainmenu, .btn-nhc-anew, .btn-nhc-load, .btn-nhc-high, .btn-nhc-cred, .btn-nhc-createnewgame, .btn-nhc-backmainmenu {
     width: 200px;
     height: 60px;
     font-family: JosefinSans-Light;
@@ -21,7 +21,7 @@ body {
     transition: 0.3s;
 }
 
-.btn-mainmenu-hover, .btn-hc-anew, .btn-hc-load, .btn-hc-high, .btn-hc-cred, .btn-hc-createnewgame {
+.btn-mainmenu-hover, .btn-hc-anew, .btn-hc-load, .btn-hc-high, .btn-hc-cred, .btn-hc-createnewgame, .btn-hc-backmainmenu {
     width: 200px;
     height: 60px;
     font-family: JosefinSans-Light;

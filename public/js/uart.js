@@ -41,6 +41,9 @@ function btnhover (btn) {
         case 11:
             $(".btn-nhc-createnewgame").toggleClass ("btn-nhc-createnewgame btn-hc-createnewgame"); window.newGameSelectedOption = 3
         break;
+        case 12:
+            $(".btn-nhc-backmainmenu").toggleClass ("btn-nhc-backmainmenu btn-hc-backmainmenu"); window.newGameSelectedOption = 4
+        break;
         /** **/
 
         /* Turn off button hover */
@@ -68,6 +71,9 @@ function btnhover (btn) {
             break;
         case 15: 
             $(".btn-hc-createnewgame").toggleClass ("btn-hc-createnewgame btn-nhc-createnewgame")
+            break;
+        case 16: 
+            $(".btn-hc-backmainmenu").toggleClass ("btn-hc-backmainmenu btn-nhc-backmainmenu")
             break;
         /** **/
     }
