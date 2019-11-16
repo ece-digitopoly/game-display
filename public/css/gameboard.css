@@ -1,0 +1,77 @@
+.player {
+    display: flex;
+    border: 1px solid #777;
+    border-radius: 15px;
+}
+#gameboard {
+    position: relative;
+    display: flex; 
+    z-index: 1;
+    justify-content: center; 
+    align-items: center; 
+    margin-left: 20px; 
+    width: 1080px; 
+    height: 870px;
+    background-color: #1aa528;
+}
+#overlay {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    position: absolute;
+    opacity: 0;
+    z-index: 2;
+    top: 0;
+    left: 20px;
+    width: 1080px; 
+    height: 870px;
+    transition: opacity .6s;
+}
+#dialog {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    width: 45%;
+    height: 50%;
+    border: 1px solid #888;
+    border-radius: 20px;
+}
+#rolldie {
+    width: 50%;
+    border-radius: 20px;
+}
+
+#player2, #player4 {
+    /* padding: 0; */
+    width: 60%; 
+    height: 20%;
+}
+#player3, #player1 {
+    width: 100%;
+    height: 20%;
+}
+#player1, #player2, #player3, #player4 {
+    padding: 10px;
+    justify-content: flex-start;
+    align-items: center;
+}
+.player2_rotate {
+    transform: rotate(90deg);
+}
+.player3_rotate {
+    transform: rotate(180deg);   
+}
+.player4_rotate {
+    transform: rotate(-90deg);
+}
+label {
+    font-size: 22px;
+    color: #eee;
+}
+img {
+    width: 100%;
+}
+.playerfund {
+    padding-left: 50px;
+}
