@@ -10,7 +10,7 @@
 
 */
 
-const Serial = require('raspi-serial').Serial;
+// const Serial = require('raspi-serial').Serial;
 
 function btnhover (btn) {
     switch (btn) {
@@ -106,6 +106,21 @@ function init_uart () {
     });
 }
 
+document.onkeydown = function (e) {
+    if (e.keyCode == 13) {
+        // enters
+        uart_control ({"action": "click"})
+    }
+    else if (e.keyCode == 38) {
+        // up
+        uart_control ({"action": "scroll", "direction": "up"})
+    }
+    else if (e.keyCode == 40) {
+        // down
+        uart_control ({"action": "scroll", "direction": "down"})
+    }
+}
+
 function uart_control (stm32_json) {
     switch (stm32_json ['action']) {
         case 'scroll':
@@ -116,8 +131,20 @@ function uart_control (stm32_json) {
                 case 'NEWGAME':
                     newGameScroll (stm32_json ['direction'])
                 break;
+                case 'GAME':
+                    gamePlayKeyHandler (stm32_json)
+                break;
             }
         break;
+        case 'dicerolling':
+            detectedDiceRoll ()
+            break;
+        case 'diceroll':
+            handleDiceRoll (stm32_json ['roll'])
+            break;
+        case 'piecemoved':
+            landed_on_tile()
+            break;
         case 'poweroff':
             document.getElementById("welcome").style.display = "none";
             document.getElementById("gameboard").style.display = "none";
@@ -163,9 +190,12 @@ function uart_control (stm32_json) {
                         case 3: hideNewGamePhaseOut(); showGameBoard(); break;
                     }  
                 break;
+                case 'GAME':
+                        gamePlayKeyHandler (stm32_json)
+                break;
             }
         break;
     }
 }
 
-init_uart()
+// init_uart()

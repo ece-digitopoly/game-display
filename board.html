@@ -23,9 +23,9 @@
                 <label id="fundtext2">$1500</label>
             </div>
             <div id="cards_2">
-                <div id="card">
+                <div class="card">
                     <div class="cardtop">
-                        <label class="cardtext" id="ct2">No cards.</label>
+                        <label class="cardtexttop" id="ct2">No cards.</label>
                     </div>
                     <div class="cardbot">
                         
@@ -43,9 +43,9 @@
                     <label id="fundtext3">$1500</label>
                 </div>
                 <div id="cards_3">
-                    <div id="card">
+                    <div class="card">
                         <div class="cardtop">
-                            <label class="cardtext" id="ct3">No cards.</label>
+                            <label class="cardtexttop" id="ct3">No cards.</label>
                         </div>
                         <div class="cardbot">
                             
@@ -65,9 +65,9 @@
                     <label id="fundtext1">$1500</label>
                 </div>
                 <div id="cards_1">
-                    <div id="card">
+                    <div class="card">
                         <div class="cardtop">
-                            <label class="cardtext" id="ct1">No cards.</label>
+                            <label class="cardtexttop" id="ct1">No cards.</label>
                         </div>
                         <div class="cardbot">
                             
@@ -85,12 +85,11 @@
                 <label id="fundtext4">$1500</label>
             </div>
             <div id="cards_4">
-                    <div id="card">
+                    <div class="card">
                         <div class="cardtop">
-                            <label class="cardtext" id="ct4">No cards.</label>
+                            <label class="cardtexttop" id="ct4">No cards.</label>
                         </div>
                         <div class="cardbot">
-                            
                         </div>
                     </div>
             </div>
@@ -105,15 +104,25 @@
         <div id="landed_unowned_dialog">
             <div id="dialogcard">
                 <div class="dialogcardtop">
-                    <label class="dialogcardtext" id="ct4">St. James</label>
+                    <label class="dialogcardtext" id="unowned_card_title">St. James</label>
                 </div>
                 <div class="dialogcardbot">
-                    
+                    <label class="dialogcardtext_bottom" id="dialog_price"></label>
+                    <label class="dialogcardtext_bottom" id="dialog_rent"></label>
+                    <label class="dialogcardtext_bottom" id="dialog_h1"></label>
+                    <label class="dialogcardtext_bottom" id="dialog_h2"></label>
+                    <label class="dialogcardtext_bottom" id="dialog_h3"></label>
+                    <label class="dialogcardtext_bottom" id="dialog_h4"></label>
+                    <label class="dialogcardtext_bottom" id="dialog_hl"></label>
+                    <label class="dialogcardtext_bottom" id="dialog_mort"></label>
+                    <label class="dialogcardtext_bottom" id="dialog_hc"></label>
+                    <label class="dialogcardtext_bottom" id="dialog_hotelc"></label>
                 </div>
             </div>
             <button class="btn" onmouseenter="$('#btn_buy').toggleClass ('btn btn-hover')" onmouseleave="$('#btn_buy').toggleClass ('btn-hover btn')" id="btn_buy">Buy</button>
             <button class="btn" onmouseenter="$('#btn_ignore').toggleClass ('btn btn-hover')" onmouseleave="$('#btn_ignore').toggleClass ('btn-hover btn')" id="btn_ignore">Ignore</button>
         </div>
     </div>
+    <script src="public/js/uart.js"></script>
     <script src="public/js/game.js"></script>
 </body>
