@@ -1,7 +1,7 @@
 all_props = [{"name": "start_and_go"},
-             {"name": "mediterranean",
+             {"name": "mediterrenean",
               "price": "$60",
-              "color": "#964bbf",
+              "color": "#db9c0a",
               "displayname":"MEDITERRANEAN AVE.",
               "rent": "$2",
               "house1": "$10",
@@ -16,7 +16,7 @@ all_props = [{"name": "start_and_go"},
              {"name": "communitychest1"},
              {"name": "baltic",
               "price": "$60",
-             "color": "#964bbf",
+             "color": "#db9c0a",
              "displayname":"BALTIC AVE.",
              "rent": "$4",
              "house1": "$20",
@@ -140,7 +140,7 @@ all_props = [{"name": "start_and_go"},
                "housecost": "$100",
                "posthotel": "$100"
               },
-              {"name": "communitychest"},
+              {"name": "communitychest2"},
               {"name": "tennessee",
               "price": "$180",
                "color": "#eb9e34",
@@ -184,7 +184,7 @@ all_props = [{"name": "start_and_go"},
                "housecost": "$150",
                "posthotel": "$150"
               },
-              {"name": "chancecard"},
+              {"name": "chance2"},
               {"name": "indiana",
               "price": "$220",
                "color": "#f2322c",
@@ -293,7 +293,7 @@ all_props = [{"name": "start_and_go"},
                "housecost": "$200",
                "posthotel": "$200"
               },
-              {"name": "communitychest2"},
+              {"name": "communitychest3"},
               {"name": "pennsylvania",
               "price": "$320",
                "color": "#00b04f",
@@ -308,10 +308,10 @@ all_props = [{"name": "start_and_go"},
                "housecost": "$200",
                "posthotel": "$200"
               },
-              {"name": "shortlinerr", 
+              {"name": "shortlinerailroad", 
                "displayname": "Short Line Railroad", 
                "price": "$200", "mortage": "100"},    // 27
-              {"name": "chance2"},
+              {"name": "chance3"},
               {"name": "parkplace",
               "price": "$350",
                "color": "#024abf",
@@ -359,6 +359,8 @@ var CURRENT_POSITION = [0, 0, 0, 0]     // for four players
 var CURRENT_PLAYER = 0                  // zero index - 0, 1, 2, 3
 var BOARD_STATE = "INIT"
 
+var ROLL_TEST = 9
+
 var PLAYER_HOLDINGS = [
     [], // player 1
     [], // player 2
@@ -373,16 +375,72 @@ property_parking    = 19
 property_taxes      = [4, 37]
 property_community  = [2, 17, 32]
 property_chance     = [7, 21, 35]
+property_utility    = []
 property_ownable    = [1, 3, 5, 6, 8, 9, 11, 12, 13, 14, 15,
                        16, 17, 18, 20, 22, 23, 24, 25, 26, 27,
                        28, 30, 31, 33, 34, 36, 38]
 
 $.fn.classList = function() {return this[0].className.split(/\s+/);};
 
+// testing function
+function continue_play() {
+    property_held = PLAYER_HOLDINGS[0].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST)
+    property_held = PLAYER_HOLDINGS[1].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
+    property_held = PLAYER_HOLDINGS[2].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
+    property_held = PLAYER_HOLDINGS[3].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
+    
+    while (!property_ownable.includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held) {
+        ROLL_TEST += 1
+        property_held = PLAYER_HOLDINGS[0].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST)
+        property_held = PLAYER_HOLDINGS[1].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
+        property_held = PLAYER_HOLDINGS[2].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
+        property_held = PLAYER_HOLDINGS[3].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
+    }
+
+    player = CURRENT_PLAYER == 0 ? "ship" : 
+             CURRENT_PLAYER == 1 ? "boot" :    
+             CURRENT_PLAYER == 2 ? "car" : "dog"
+
+    $("#dialog1").html ("It's the " + player + "'s turn!")
+    $("#dialog2").html ("Roll the dice to move the piece.")
+
+    $("#diedialog").css ('display', 'flex')
+    $("#landed_unowned_dialog").css ('display', 'none')
+    $("#overlay").css ('opacity', 1)
+
+    setTimeout (function () {
+        uart_control ({"action": "dicerolling"})
+    }, 2000)
+    
+    setTimeout (function () {
+        uart_control ({"action": "diceroll", "roll": ROLL_TEST.toString()})
+    }, 4000)    // Assume motor movement has started
+    
+    setTimeout (function () {
+        uart_control ({"action": "piecemoved"})
+    }, 6000)    // Assume motor movement has started
+}
+
 function init_board () {
     $("#diedialog").css ('display', 'flex')
     $("#landed_unowned_dialog").css ('display', 'none')
     $("#overlay").css ('opacity', 1)
+
+    list = document.getElementsByClassName ("tile")
+    arr = Array.prototype.slice.call(list)
+
+    // Color tiles around by looking at property details
+    arr.map (elm => {
+        id = elm.id.replace ("tile_", "")
+        property = all_props.filter (function (v, i, a) { if (v.name == id) return v })
+        return property[0]
+     }).forEach(element => {
+        if (typeof element == "undefined")
+            return
+        id = "tile_" + element.name
+        $("#" + id).css ('background-color', element.color || '#fff')
+     });
+
     window.gameState = "GAME"
 }
 init_board()
@@ -427,10 +485,14 @@ function gamePlayKeyHandler (uartjson) {
                     // buy property
                     if (property_ownable.includes (NEXT_POS))
                         addPropertyToCurrentPlayer (NEXT_POS)
+                    else {
+                        alert ("unhandled card --> " + NEXT_POS.toString())
+                    }
                 }
                 // else, ignore property, and move to next player
                 // same action is performed even if player buys property
                 CURRENT_PLAYER = CURRENT_PLAYER == 3 ? 0 : CURRENT_PLAYER + 1
+                continue_play()
             break;
         }
     }
@@ -533,7 +595,12 @@ function landed_on_tile () {
     $("#landed_unowned_dialog").css ('display', 'flex')
     $("#overlay").css ('opacity', '1')
 
-    $('#btn_buy').toggleClass ('btn btn-hover')
+    if (document.getElementById ('btn_buy').classList [0] == "btn") {
+        $('#btn_buy').toggleClass ('btn btn-hover')
+    }
+    if (document.getElementById ('btn_ignore').classList [0] == "btn-hover") {
+        $('#btn_ignore').toggleClass ('btn btn-hover')
+    }
     BOARD_STATE = "PLAYERWAIT"
 }
         
@@ -542,7 +609,7 @@ setTimeout (function () {
 }, 2000)
 
 setTimeout (function () {
-    uart_control ({"action": "diceroll", "roll": "9"})
+    uart_control ({"action": "diceroll", "roll": ROLL_TEST.toString()})
 }, 4000)    // Assume motor movement has started
 
 setTimeout (function () {
