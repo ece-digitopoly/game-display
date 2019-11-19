@@ -10,7 +10,7 @@
 
 */
 
-const Serial = require('raspi-serial').Serial;
+// const Serial = require('raspi-serial').Serial;
 
 function btnhover (btn) {
     switch (btn) {
@@ -33,7 +33,7 @@ function btnhover (btn) {
             $(".turnnumber").toggleClass ("turnnumber turnnumber-hover"); window.newGameSelectedOption = 0
             break;
         case 9: 
-            $(".playerfund").toggleClass ("playerfund playerfund-hover"); window.newGameSelectedOption = 1
+            $(".playerfundch").toggleClass ("playerfundch playerfundch-hover"); window.newGameSelectedOption = 1
             break;
         case 10: 
             $(".bankfund").toggleClass ("bankfund bankfund-hover"); window.newGameSelectedOption = 2
@@ -60,19 +60,19 @@ function btnhover (btn) {
             $(".btn-hc-cred").toggleClass ("btn-hc-cred btn-nhc-cred")
             break;
         /* Turn off textarea hover */
-        case 12: 
+        case 13: 
             $(".turnnumber-hover").toggleClass ("turnnumber-hover turnnumber")
             break;
-        case 13: 
-            $(".playerfund-hover").toggleClass ("playerfund-hover playerfund")
-            break;
         case 14: 
-            $(".bankfund-hover").toggleClass ("bankfund-hover bankfund")
+            $(".playerfundch-hover").toggleClass ("playerfundch-hover playerfundch")
             break;
         case 15: 
-            $(".btn-hc-createnewgame").toggleClass ("btn-hc-createnewgame btn-nhc-createnewgame")
+            $(".bankfund-hover").toggleClass ("bankfund-hover bankfund")
             break;
         case 16: 
+            $(".btn-hc-createnewgame").toggleClass ("btn-hc-createnewgame btn-nhc-createnewgame")
+            break;
+        case 17: 
             $(".btn-hc-backmainmenu").toggleClass ("btn-hc-backmainmenu btn-nhc-backmainmenu")
             break;
         /** **/
@@ -106,6 +106,21 @@ function init_uart () {
     });
 }
 
+document.onkeydown = function (e) {
+    if (e.keyCode == 13) {
+        // enters
+        uart_control ({"action": "click"})
+    }
+    else if (e.keyCode == 38) {
+        // up
+        uart_control ({"action": "scroll", "direction": "up"})
+    }
+    else if (e.keyCode == 40) {
+        // down
+        uart_control ({"action": "scroll", "direction": "down"})
+    }
+}
+
 function uart_control (stm32_json) {
     switch (stm32_json ['action']) {
         case 'scroll':
@@ -116,8 +131,20 @@ function uart_control (stm32_json) {
                 case 'NEWGAME':
                     newGameScroll (stm32_json ['direction'])
                 break;
+                case 'GAME':
+                    gamePlayKeyHandler (stm32_json)
+                break;
             }
         break;
+        case 'dicerolling':
+            detectedDiceRoll ()
+            break;
+        case 'diceroll':
+            handleDiceRoll (stm32_json ['roll'])
+            break;
+        case 'piecemoved':
+            landed_on_tile()
+            break;
         case 'poweroff':
             document.getElementById("welcome").style.display = "none";
             document.getElementById("gameboard").style.display = "none";
@@ -148,24 +175,19 @@ function uart_control (stm32_json) {
                 break;
                 case 'NEWGAME':
                     switch (window.newGameSelectedOption) {
-                        case 0: if (document.getElementsByClassName ("").classlist) {
-                            
-                        }
-                        break;
-                        case 1: if (document.getElementsByClassName ("").classlist) {
-
-                        }
-                        break;
-                        case 2: if (document.getElementsByClassName ("").classlist) {
-
-                        }
-                        break;
-                        case 3: hideNewGamePhaseOut(); showGameBoard(); break;
-                    }  
+                        case 0: break;
+                        case 1: break;
+                        case 2: break;
+                        case 3: $(".btn-hc-createnewgame").toggleClass ("btn-hc-createnewgame btn-nhc-createnewgame"); hideNewGamePhaseOutToGameBoard(); break;
+                        case 4: $(".btn-hc-backmainmenu").toggleClass ("btn-hc-backmainmenu btn-nhc-backmainmenu"); hideNewGamePhaseOutToMainMenu(); break;
+                    }
+                break;
+                case 'GAME':
+                    gamePlayKeyHandler (stm32_json)
                 break;
             }
         break;
     }
 }
 
-init_uart()
+// init_uart()

@@ -57,23 +57,26 @@ function mainMenuScroll (dir) {
 }
 
 function newGameScroll (dir) {
-    btnhover (window.newGameSelectedOption + 12)
+    // deselect
+    btnhover (window.newGameSelectedOption + 13)
+    // select
     switch (window.newGameSelectedOption) {    
-        case 0: // 8
-            btnhover (dir == 'up' ? 11 : 9); break;
-        case 1: // 9
+        case 0: // 13
+            btnhover (dir == 'up' ? 12 : 9); break;
+        case 1: // 14
             btnhover (dir == 'up' ? 8 : 10); break;
-        case 2: // 10
+        case 2: // 15
             btnhover (dir == 'up' ? 9 : 11); break;
-        case 3: // 11
-            btnhover (dir == 'up' ? 10 : 8); break;
+        case 3: // 16
+            btnhover (dir == 'up' ? 10 : 12); break;
+        case 4: // 17
+            btnhover (dir == 'up' ? 11 : 8); break;
     }
 }
 
 function changeNewGameTextbox (ch) {
     switch (ch) {
-        case 0:
-            
+        case 0:            
             break;
 
         case 1:
@@ -145,32 +148,23 @@ function hideNewGamePhaseOutToMainMenu() {
 
 function showGameBoard() {
     window.gameState = 'START'
-    initialize();
-    document.getElementById("gameboard").style ['display'] = 'block';
+    $("#gameboard").css ('display', 'flex')
+    $("#gameboard").css ('opacity', '1')
+    $("#overlay").css ('display', 'flex')
+    $("#overlay").css ('opacity', '1')
+    $("#border").css ('display', 'flex')
+    $("#border").css ('opacity', '1')
+    init_board()
 
-    load_canv = setInterval (function () {
-        opacity = document.getElementById ("gameboard").style ['opacity']
-        console.log(opacity);
-        if (opacity == 1)
-        {
-            clearInterval (load_canv)
-        }
-        else
-            document.getElementById ("gameboard").style ['opacity'] = parseFloat (opacity) + 0.01
-    }, 1)
-}
-
-// Legacy function - remove after deployment //
-
-function waitForInput() {
-    if (document.getElementById ("welcome").style ['opacity'] == '0')
-    {
-        document.getElementById ("welcome").style ['display'] = 'none'
-        id = setTimeout (showGameBoard, 250)
-    }
-    else
-    {
-        document.getElementById ("welcome").style ['opacity'] = parseFloat (document.getElementById ("welcome").style ['opacity']) - 0.01
-        id = setTimeout (waitForInput, 3)
-    }
+    setTimeout (function () {
+        uart_control ({"action": "dicerolling"})
+    }, 2000)
+    
+    setTimeout (function () {
+        uart_control ({"action": "diceroll", "roll": ROLL_TEST.toString()})
+    }, 4000)    // Assume motor movement has started
+    
+    setTimeout (function () {
+        uart_control ({"action": "piecemoved"})
+    }, 6000)    // Assume motor movement has started
 }

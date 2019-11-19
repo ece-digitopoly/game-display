@@ -1,6 +1,6 @@
 const electron = require ('electron')
 // Need to check serialport module compile on non-electron base
-const serial = require ('raspi-serial') // require in here because apparently loading only in the HTML will load the wrong version or something idk
+// const serial = require ('raspi-serial') // require in here because apparently loading only in the HTML will load the wrong version or something idk
 const {app, BrowserWindow} = electron
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

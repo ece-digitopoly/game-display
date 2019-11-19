@@ -9,16 +9,15 @@
         const $ = require ('jquery') // Always, ALWAYS LOAD JQUERY FIRST PLS
         window.gameState = 'INIT'
     </script>
-
     <link rel="stylesheet" type="text/css" href="public/css/stylesheet.css">
-    <link rel="stylesheet" type="text/css" href="public/css/overlay.css">
+    <link rel="stylesheet" type="text/css" href="public/css/gameboard.css">
 </head>
 <body>
     <div style="padding-top: 25px"></div>
     <div id="welcome" style="display:block; padding-top: 200px; height: 100%; align-items: center; text-align: center; opacity: -1">
         <svg xmlns="http://www.w3.org/2000/svg" height="200px" viewBox="0 0 300 300">
             <g>
-             <rect fill="#3ba86e" id="canvas_background" height="302" width="302" y="-1" x="-1"/>
+             <rect fill="#1aa528" id="canvas_background" height="302" width="302" y="-1" x="-1"/>
              <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
              <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
              </g>
@@ -56,7 +55,7 @@
                 <h3 style="font-weight: bold; font-family: JosefinSans-Thin; font-size: 22px; color: #fff">Starting funds per player: </h3>
             </div>
             <div class="option" style="width: 50%; vertical-align: middle">
-                <textarea class="playerfund" onmouseenter="btnhover(9)" onmouseleave="btnhover(13)">$1500</textarea>
+                <textarea class="playerfundch" onmouseenter="btnhover(9)" onmouseleave="btnhover(13)">$1500</textarea>
             </div>
         </div>
         <div class="row" style="width: 100%; align-items: center">
@@ -72,15 +71,172 @@
             <button class="btn-nhc-backmainmenu" style="width:100%; margin-top: 100px; margin-left: 40%; margin-right: 40%" id="btn-ngc" onmouseenter="btnhover(12)" onmouseleave="btnhover(16)" onclick="javascript:hideNewGamePhaseOutToMainMenu()">Back to main menu</button>
         </div>
     </div>
-    <div id="gameboard" style="width: 100%; height: 100%; display: none; opacity: 0">
-        <canvas id="canvas"></canvas>
+    <div id="gameboard">
+            <div class="player player2_rotate" id="player2">
+                <div class="profile">
+                    <label id="playername">PLAYER 2</label><br>
+                    <img src="public/images/boot.png">
+                </div>
+                <div class="playerfund">
+                    <label id="fundtext2">$1500</label>
+                </div>
+                <div id="cards_2">
+                    <div class="card">
+                        <div class="cardtop">
+                            <label class="cardtexttop" id="ct2">No cards.</label>
+                        </div>
+                        <div class="cardbot">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="central_column" >
+                <div class="player3_rotate player" id="player3">
+                    <div class="profile">
+                        <label id="playername">PLAYER 3</label><br>
+                        <img src="public/images/car.png">
+                    </div>
+                    <div class="playerfund">
+                        <label id="fundtext3">$1500</label>
+                    </div>
+                    <div id="cards_3">
+                        <div class="card">
+                            <div class="cardtop">
+                                <label class="cardtexttop" id="ct3">No cards.</label>
+                            </div>
+                            <div class="cardbot">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="game_state" style="width: 100%; height: 60%">
+    
+                </div>
+                <div class="player" id="player1">
+                    <div class="profile">
+                        <label id="playername">PLAYER 1</label><br>
+                        <img src="public/images/ship.png">
+                    </div>
+                    <div class="playerfund">
+                        <label id="fundtext1">$1500</label>
+                    </div>
+                    <div id="cards_1">
+                        <div class="card">
+                            <div class="cardtop">
+                                <label class="cardtexttop" id="ct1">No cards.</label>
+                            </div>
+                            <div class="cardbot">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="player player4_rotate" id="player4">
+                <div class="profile">
+                    <label id="playername">PLAYER 4</label><br>
+                    <img src="public/images/dog.png">
+                </div>
+                <div class="playerfund">
+                    <label id="fundtext4">$1500</label>
+                </div>
+                <div id="cards_4">
+                        <div class="card">
+                            <div class="cardtop">
+                                <label class="cardtexttop" id="ct4">No cards.</label>
+                            </div>
+                            <div class="cardbot">
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div id="border">
+            <div id="border-left">
+                <div style="background-color: #fff;  width: 100%; padding-top: 20px"></div>
+                <div class="tile tile-side" id="tile_newyork"></div>
+                <div class="tile tile-side" id="tile_tennessee"></div>
+                <div class="tile tile-side" id="tile_communitychest2"></div>
+                <div class="tile tile-side" id="tile_stjames"></div>
+                <div class="tile tile-side" id="tile_pennsylvaniarr"></div>
+                <div class="tile tile-side" id="tile_virginia"></div>
+                <div class="tile tile-side" id="tile_statesave"></div>
+                <div class="tile tile-side" id="tile_electricco"></div>
+                <div class="tile tile-side" id="tile_stcharles"></div>
+                <div style="background-color: #fff;  width: 100%; padding-top: 20px"></div>
+            </div>
+            <div id="border-central">
+                <div id="border-top">
+                    <div class="tile tile-center" id="tile_kentucky"></div>
+                    <div class="tile tile-center" id="tile_chance2"></div>
+                    <div class="tile tile-center" id="tile_indiana"></div>
+                    <div class="tile tile-center" id="tile_illinois"></div>
+                    <div class="tile tile-center" id="tile_borailroad"></div>
+                    <div class="tile tile-center" id="tile_atlantic"></div>
+                    <div class="tile tile-center" id="tile_ventnor"></div>
+                    <div class="tile tile-center" id="tile_waterworks"></div>
+                    <div class="tile tile-center" id="tile_marvin"></div>
+                </div>
+                <div id="border-bottom">
+                    <div class="tile tile-center" id="tile_connecticut"></div>
+                    <div class="tile tile-center" id="tile_vermont"></div>
+                    <div class="tile tile-center" id="tile_chance1"></div>
+                    <div class="tile tile-center" id="tile_oriental"></div>
+                    <div class="tile tile-center" id="tile_readingrr"></div>
+                    <div class="tile tile-center" id="tile_incometax"></div>
+                    <div class="tile tile-center" id="tile_baltic"></div>
+                    <div class="tile tile-center" id="tile_communitychest1"></div>
+                    <div class="tile tile-center" id="tile_mediterrenean"></div>
+                </div>
+            </div>
+            <div id="border-right">
+                <div style="background-color: #fff; width: 100%; padding-top: 20px"></div>
+                <div class="tile tile-side" id="tile_pacific"></div>
+                <div class="tile tile-side" id="tile_northcarolina"></div>
+                <div class="tile tile-side" id="tile_communitychest3"></div>
+                <div class="tile tile-side" id="tile_pennsylvania"></div>
+                <div class="tile tile-side" id="tile_shortlinerailroad"></div>
+                <div class="tile tile-side" id="tile_chance3"></div>
+                <div class="tile tile-side" id="tile_parkplace"></div>
+                <div class="tile tile-side" id="tile_luxurytax"></div>
+                <div class="tile tile-side" id="tile_boardwalk"></div>
+                <div style="background-color: #fff; width: 100%; padding-top: 20px"></div>
+            </div>
+        </div>
+        <div id="overlay">
+            <div id="diedialog">
+                <img id="rolldie" src="public/images/die.png" >
+                <label id="dialog1">It's the ship's turn!</label>
+                <label id="dialog2">Roll the dice to move the piece.</label>
+            </div>
+            <div id="landed_unowned_dialog">
+                <div id="dialogcard">
+                    <div class="dialogcardtop">
+                        <label class="dialogcardtext" id="unowned_card_title">St. James</label>
+                    </div>
+                    <div class="dialogcardbot">
+                        <label class="dialogcardtext_bottom" id="dialog_price"></label>
+                        <label class="dialogcardtext_bottom" id="dialog_rent"></label>
+                        <label class="dialogcardtext_bottom" id="dialog_h1"></label>
+                        <label class="dialogcardtext_bottom" id="dialog_h2"></label>
+                        <label class="dialogcardtext_bottom" id="dialog_h3"></label>
+                        <label class="dialogcardtext_bottom" id="dialog_h4"></label>
+                        <label class="dialogcardtext_bottom" id="dialog_hl"></label>
+                        <label class="dialogcardtext_bottom" id="dialog_mort"></label>
+                        <label class="dialogcardtext_bottom" id="dialog_hc"></label>
+                        <label class="dialogcardtext_bottom" id="dialog_hotelc"></label>
+                    </div>
+                </div>
+                <button class="btn" onmouseenter="$('#btn_buy').toggleClass ('btn btn-hover')" onmouseleave="$('#btn_buy').toggleClass ('btn-hover btn')" id="btn_buy">Buy</button>
+                <button class="btn" onmouseenter="$('#btn_ignore').toggleClass ('btn btn-hover')" onmouseleave="$('#btn_ignore').toggleClass ('btn-hover btn')" id="btn_ignore">Ignore</button>
+            </div>
     </div>
     <div class="overlay" id="div_poweroff" style="display: none">
         <h2 style="width: 100%; padding-top: 10%; text-align: center; font-family: JosefinSans-Thin; font-size: 28px; color: #fff">Restarting...</h2>
     </div>
-    <script src="public/js/animation.js"></script>
     <script src="public/js/uart.js"></script>
+    <script src="public/js/game.js"></script>
     <script src="public/js/splashscreen.js"></script>
-    <script src="public/js/data.js"></script>
-    <script src="public/js/canvas.js"></script>
 </body>

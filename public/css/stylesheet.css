@@ -1,5 +1,5 @@
 body {
-    background-color: #3ba86e;
+    background-color: #1aa528;
 }
 
 ::-webkit-scrollbar {
@@ -49,7 +49,7 @@ body {
 }
 
 /* Textarea */
-.turnnumber, .playerfund, .bankfund {
+.turnnumber, .playerfundch, .bankfund {
     width: 300px;
     height: 40px;
     text-align: center;
@@ -64,7 +64,7 @@ body {
     transition: 0.3s;
 }
 
-.turnnumber-hover, .playerfund-hover, .bankfund-hover {
+.turnnumber-hover, .playerfundch-hover, .bankfund-hover {
     width: 300px;
     height: 40px;
     text-align: center;
@@ -77,19 +77,6 @@ body {
     border-radius: 10px;
 }
 
-.turnnumber-clicked, .playerfund-clicked, .bankfund-clicked {
-    width: 300px;
-    height: 40px;
-    text-align: center;
-    font-weight: bold;
-    color: #eee;
-    font-family: JosefinSans-Thin; 
-    font-size: 22px;
-    border: 5px solid #7ff;
-    background-color: rgba(85, 221, 221, 0.397);
-    padding: 5px;
-    border-radius: 10px;
-}
 /* End Textarea */
 
 @font-face { 
