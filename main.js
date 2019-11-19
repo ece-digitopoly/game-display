@@ -16,10 +16,13 @@ function createWindow () {
   win = new BrowserWindow({
     width: setW,
     height: setH,
+    transparent: true,
+    backgroundColor: "#1aa528",
     webPreferences: {
       nodeIntegration: true
     },
-     frame: false
+    frame: false,
+    show: false
   })
 
   // and load the index.html of the app.
@@ -27,6 +30,11 @@ function createWindow () {
 
   // Open the DevTools.
   // win.webContents.openDevTools()
+
+  win.on ('ready-to-show', function () {
+	win.show();
+	win.focus();
+  });
 
   // Emitted when the window is closed.
   win.on('closed', () => {
