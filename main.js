@@ -6,7 +6,7 @@ const cp = require ('child_process')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
-cp.spawn ('xdotool mousemove 1000 1000')
+cp.spawn ('xdotool', ['mousemove', '1000', '1000'])
 
 function createWindow () {
   // Create the browser window.
