@@ -219,6 +219,16 @@ function showGameBoard() {
     }, 4000)    // Assume motor movement has started
     
     setTimeout (function () {
-        uart_control ({"action": "piecemoved"})
+        uart_control ({"action": "dialog", "options": ["Buy", "Ignore"], "text": "This property is unowned."})
     }, 6000)    // Assume motor movement has started
+
+    setTimeout (function () {
+        uart_control ({"action": "piecemoved"})
+    }, 6100)    // Assume motor movement has started
+
+    setTimeout (function () {
+        uart_control ({"action": "update", "property": "9", "player": "0", "text": "This property is unowned."})
+        uart_control ({"action": "update", "player": "0", "money": "1400"})
+    }, 9000)    // Assume motor movement has started
+
 }

@@ -159,6 +159,24 @@ function uart_control (stm32_json) {
         case 'dicerolling':
             detectedDiceRoll ()
             break;
+        case 'update':
+            if (stm32_json ['property'] && stm32_json ['player'])
+                addPropertyToCurrentPlayer (stm32_json ['property'], stm32_json ['player'])
+            else if (stm32_json ['money'] && stm32_json ['player']) {
+                fund = parseInt (stm32_json ['money'])
+                $("#fundtext" + (parseInt (stm32_json ['player']) + 1).toString()).html ("$" + fund.toString())
+            }
+            break;
+        case 'dialog':
+            $(".btn-dialog").remove();
+            stm32_json ['options'].forEach(element => {
+                newbutton = document.createElement ('button')
+                newbutton.className = 'btn btn-dialog'
+                newbutton.innerHTML = element
+                newbutton.id = 'btn_' + element.toLowerCase()
+                $("#landed_unowned_dialog").append (newbutton)
+            });
+            break;
         case 'diceroll':
             handleDiceRoll (stm32_json ['roll'])
             break;

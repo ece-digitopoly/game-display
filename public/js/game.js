@@ -357,7 +357,7 @@ railway = [
             ["Mortage Value", 100], //mortgage
           ]
 
-chance =  [
+    chance =  [
                 {id: 0,  description: "Advance to Go."},
                 {id: 1,  description: "Advance to Illinois Ave. If you pass Go, collect $200."},
                 {id: 2,  description: "Advance to St. Charles Place. If you pass Go, collect $200."},
@@ -374,7 +374,28 @@ chance =  [
                 {id: 13, description: "You have been elected Chairman of the Board. Pay each player $50. "},
                 {id: 14, description: "Your building loan matures. Receive $150."},
                 {id: 15, description: "You have won a crossword competition. Collect $100."}
-          ]
+            ]
+
+commchest = [
+                {id: 0, description: ""}
+                // Advance to "Go". Collect $200.
+                // Bank error in your favor. Collect $200. 
+                // Doctor's fees. Pay $50. 
+                // From sale of stock you get $50.
+                // Get Out of Jail Free. This card may be kept until needed or sold/traded. 
+                // Go to Jail. Go directly to jail. Do not pass Go, Do not collect $200. 
+                // Grand Opera Night {Opening in previous US editions, not in the deck in UK editions}. Collect $50 from every player for opening night seats. 
+                // Holiday {Xmas} Fund matures. Receive {Collect} $100. 
+                // Income tax refund. Collect $20. 
+                // It is {It's} your birthday. Collect $10 from every player. {Mr. Monopoly holds his gift and gets a M sign on the top of it.}
+                // Life insurance matures – Collect $100 
+                // Hospital Fees. Pay $50. {Pay hospital fees of $100.} {Pay hospital $100.} 
+                // School fees. Pay $50. {Pay school fees {tax} of $150} 
+                // Receive $25 consultancy fee. {Receive for services $25.} 
+                // You are assessed for street repairs: Pay $40 per house and $115 per hotel you own. 
+                // You have won second prize in a beauty contest. Collect $10. 
+                // You inherit $100.  
+            ]
 
 var DICE_ROLL = -1
 var NEXT_POS = -1
@@ -393,15 +414,15 @@ var PLAYER_HOLDINGS = [
 
 property_go         = 0
 property_jail       = 10
-property_gotojail   = 29
-property_parking    = 19
-property_taxes      = [4, 37]
-property_community  = [2, 17, 32]
-property_chance     = [7, 21, 35]
-property_utility    = []
+property_gotojail   = 30
+property_parking    = 20
+property_taxes      = [4, 38]
+property_community  = [2, 17, 33]
+property_chance     = [7, 22, 36]
+property_utility    = [12]
 property_ownable    = [1, 3, 5, 6, 8, 9, 11, 12, 13, 14, 15,
-                       16, 17, 18, 20, 22, 23, 24, 25, 26, 27,
-                       28, 30, 31, 33, 34, 36, 38]
+                       16, 18, 19, 21, 23, 24, 25, 26, 27,
+                       28, 29, 31, 32, 34, 35, 37, 39]
 
 $.fn.classList = function() {return this[0].className.split(/\s+/);};
 
@@ -505,16 +526,20 @@ function gamePlayKeyHandler (uartjson) {
             case "PLAYERWAIT":
                 if ($("#btn_buy").classList()[0] == 'btn-hover') {
                     // buy property
-                    if (property_ownable.includes (NEXT_POS))
-                        addPropertyToCurrentPlayer (NEXT_POS)
-                    else {
-                        alert ("unhandled card --> " + NEXT_POS.toString())
-                    }
+                    // if (property_ownable.includes (NEXT_POS))
+                    //     addPropertyToCurrentPlayer (NEXT_POS)
+                    // else {
+                    //     alert ("unhandled card --> " + NEXT_POS.toString())
+                    // }
+                    window.stm32.write ("BUY")
+                }
+                else if ($("#btn_ignore").classList()[0] == 'btn-hover') {
+                    window.stm32.write ("IGNORE")
                 }
                 // else, ignore property, and move to next player
                 // same action is performed even if player buys property
-                CURRENT_PLAYER = CURRENT_PLAYER == 3 ? 0 : CURRENT_PLAYER + 1
-                continue_play()
+                // CURRENT_PLAYER = CURRENT_PLAYER == 3 ? 0 : CURRENT_PLAYER + 1
+                // continue_play()
             break;
         }
     }
@@ -538,33 +563,34 @@ function handleDiceRoll (roll) {
     NEXT_POS = DICE_ROLL + current_player_pos > 27 ? (27 - DICE_ROLL + current_player_pos) : DICE_ROLL + current_player_pos
 }
 
-function addPropertyToCurrentPlayer (card) {
+function addPropertyToCurrentPlayer (card, player) {
     // Extract money
-    fund = parseInt ($("#fundtext" + (CURRENT_PLAYER + 1).toString()).html().match (/\$([0-9]+)/)[1])
-    fund -= parseInt (all_props [NEXT_POS].price.match (/\$([0-9]+)/)[1])
-    $("#fundtext" + (CURRENT_PLAYER + 1).toString()).html ("$" + fund.toString())
-    
-    if (PLAYER_HOLDINGS [CURRENT_PLAYER].length == 0) {
-        $('#cards_' + (CURRENT_PLAYER + 1).toString()).children()[0].remove()
+
+    player = parseInt (player)
+
+    console.log (PLAYER_HOLDINGS)
+
+    if (PLAYER_HOLDINGS [player].length == 0) {
+        $('#cards_' + (player + 1).toString()).children()[0].remove()
     }
-    PLAYER_HOLDINGS [CURRENT_PLAYER].push (NEXT_POS)
+    PLAYER_HOLDINGS [player].push (card)
     
     newcardwhole = document.createElement ("div"); newcardwhole.classList.add ("card")
     newcardtop = document.createElement ("div"); newcardtop.classList.add ("cardtop")
     newcard = document.createElement ("div"); newcard.classList.add ("cardbot")
-    newcardtop.style ['background-color'] = all_props [NEXT_POS].color
+    newcardtop.style ['background-color'] = all_props [card].color
 
     newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-    newlabel.innerHTML = all_props [NEXT_POS].displayname
+    newlabel.innerHTML = all_props [card].displayname
     newcardtop.appendChild (newlabel) 
 
     newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-    newlabel.innerHTML = "Price:          " + all_props [NEXT_POS].price
+    newlabel.innerHTML = "Price:          " + all_props [card].price
     newcard.appendChild (newlabel)
 
-    if (property_ownable.includes (NEXT_POS) && !property_utility.includes (NEXT_POS)) {
+    if (property_ownable.includes (NEXT_POS) && !property_utility.includes (card)) {
         newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-        newlabel.innerHTML = "Rent with no houses:           " + all_props [NEXT_POS].rent
+        newlabel.innerHTML = "Rent with no houses:           " + all_props [card].rent
         newcard.appendChild (newlabel)
     
         newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
@@ -572,29 +598,29 @@ function addPropertyToCurrentPlayer (card) {
         newcard.appendChild (newlabel)
     
         newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-        newlabel.innerHTML =   all_props [NEXT_POS].house1 + "/"
-                             + all_props [NEXT_POS].house2 + "/"
-                             + all_props [NEXT_POS].house3 + "/"
-                             + all_props [NEXT_POS].house4
+        newlabel.innerHTML =   all_props [card].house1 + "/"
+                             + all_props [card].house2 + "/"
+                             + all_props [card].house3 + "/"
+                             + all_props [card].house4
         newcard.appendChild (newlabel)
     
         newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-        newlabel.innerHTML = "Rent with a hotel:   " + all_props [NEXT_POS].hotel
+        newlabel.innerHTML = "Rent with a hotel:   " + all_props [card].hotel
         newcard.appendChild (newlabel)
     
         newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-        newlabel.innerHTML = "Mortgage:       " + all_props [NEXT_POS].mortgage
+        newlabel.innerHTML = "Mortgage:       " + all_props [card].mortgage
         newcard.appendChild (newlabel)
     
         newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-        newlabel.innerHTML = "Cost per house: " + all_props [NEXT_POS].housecost
+        newlabel.innerHTML = "Cost per house: " + all_props [card].housecost
         newcard.appendChild (newlabel)
 
         newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-        newlabel.innerHTML = "Cost of hotel:  " + all_props [NEXT_POS].posthotel
+        newlabel.innerHTML = "Cost of hotel:  " + all_props [card].posthotel
         newcard.appendChild (newlabel)
     }
-    else if (property_utility.includes (NEXT_POS)) {
+    else if (property_utility.includes (card)) {
 
     }
 
