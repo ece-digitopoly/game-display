@@ -210,6 +210,7 @@ function showGameBoard() {
     $("#border").css ('opacity', '1')
     init_board()
 
+    // TESTING SETTIMEOUT FUNCTIONS REMOVE AFTER DEPLOYMENT
     setTimeout (function () {
         uart_control ({"action": "dicerolling"})
     }, 2000)
@@ -220,11 +221,11 @@ function showGameBoard() {
     
     setTimeout (function () {
         uart_control ({"action": "dialog", "options": ["Buy", "Ignore"], "text": "This property is unowned."})
-    }, 6000)    // Assume motor movement has started
+    }, 6000)    // Assume motor movement has ended
 
     setTimeout (function () {
         uart_control ({"action": "piecemoved"})
-    }, 6100)    // Assume motor movement has started
+    }, 6100)
 
     setTimeout (function () {
         uart_control ({"action": "update", "property": "9", "player": "0", "text": "This property is unowned."})
