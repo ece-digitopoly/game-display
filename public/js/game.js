@@ -1,4 +1,7 @@
-all_props = [{"name": "start_and_go"},
+all_props = [
+             {"name": "start_and_go", 
+              "displayname": "PASSING GO!",
+              "description": "Collect $200!"},
              {"name": "mediterrenean",
               "price": "$60",
               "color": "#db9c0a",
@@ -13,7 +16,8 @@ all_props = [{"name": "start_and_go"},
               "housecost": "$50",
               "posthotel": "$50"
              },
-             {"name": "communitychest1"},
+             {"name": "communitychest1",
+             "displayname": "COMMUNITY CHEST"},
              {"name": "baltic",
               "price": "$60",
              "color": "#db9c0a",
@@ -28,9 +32,11 @@ all_props = [{"name": "start_and_go"},
              "housecost": "$50",
              "posthotel": "$50"
              },
-             {"name": "incometax", "tax": "$200"},
+             {"name": "incometax", 
+              "displayname": "INCOME TAX",
+              "tax": "$200"},
              {"name": "readingrr", 
-              "displayname": "Reading Railroad",
+              "displayname": "READING RAILROAD",
               "price": "$200", 
               "mortage":"100"},      // 24
              {"name": "oriental",
@@ -46,7 +52,8 @@ all_props = [{"name": "start_and_go"},
              "housecost": "$50",
              "posthotel": "$50"
              },
-             {"name": "chance1"},
+             {"name": "chance1",
+             "displayname": "CHANCE"},
              {"name": "vermont",
               "price": "$100",
              "color": "#5bf2f5",
@@ -75,7 +82,7 @@ all_props = [{"name": "start_and_go"},
              "housecost": "$50",
              "posthotel": "$50"
              },
-             {"name": "jail"},
+             {"name": "jail", "displayname": "PASSING THROUGH JAIL"},
              {"name": "stcharles",
               "price": "$120",
                "color": "#964bbf",
@@ -124,7 +131,7 @@ all_props = [{"name": "start_and_go"},
                "posthotel": "$100"
               },
               {"name": "pennsylvaniarr",
-               "displayname": "Pennsylvania Railroad",
+               "displayname": "PENNSYLVANIA RAILROAD",
                "price": "$200",
                "mortage":"100"},
               {"name": "stjames",
@@ -140,7 +147,7 @@ all_props = [{"name": "start_and_go"},
                "housecost": "$100",
                "posthotel": "$100"
               },
-              {"name": "communitychest2"},
+              {"name": "communitychest2", "displayname": "COMMUNITY CHEST"},
               {"name": "tennessee",
               "price": "$180",
                "color": "#eb9e34",
@@ -169,7 +176,7 @@ all_props = [{"name": "start_and_go"},
                "housecost": "$100",
                "posthotel": "$100"
               },
-              {"name": "freeparking"},
+              {"name": "freeparking", "displayname": "FREE PARKING"},
               {"name": "kentucky",
               "price": "$200",
                "color": "#f2322c",
@@ -184,7 +191,7 @@ all_props = [{"name": "start_and_go"},
                "housecost": "$150",
                "posthotel": "$150"
               },
-              {"name": "chance2"},
+              {"name": "chance2", "displayname": "CHANCE"},
               {"name": "indiana",
               "price": "$220",
                "color": "#f2322c",
@@ -214,7 +221,7 @@ all_props = [{"name": "start_and_go"},
                "posthotel": "$150"
               },
               {"name": "borailroad",
-               "displayname": "B&O Railroad",
+               "displayname": "B&O RAILROAD",
                "price": "$240", 
                "mortage": "100"},     // 26
               {"name": "atlantic",
@@ -264,7 +271,7 @@ all_props = [{"name": "start_and_go"},
                "housecost": "$150",
                "posthotel": "$150"
              },
-             {"name": "gotojail"},
+             {"name": "gotojail", "displayname": "GO TO JAIL!"},
              {"name": "pacific",
               "price": "$300",
                "color": "#00b04f",
@@ -293,7 +300,7 @@ all_props = [{"name": "start_and_go"},
                "housecost": "$200",
                "posthotel": "$200"
               },
-              {"name": "communitychest3"},
+              {"name": "communitychest3", "displayname": "COMMUNITY CHEST"},
               {"name": "pennsylvania",
               "price": "$320",
                "color": "#00b04f",
@@ -309,9 +316,9 @@ all_props = [{"name": "start_and_go"},
                "posthotel": "$200"
               },
               {"name": "shortlinerailroad", 
-               "displayname": "Short Line Railroad", 
+               "displayname": "SHORT LINE RAILROAD", 
                "price": "$200", "mortage": "100"},    // 27
-              {"name": "chance3"},
+              {"name": "chance3", "displayname": "CHANCE"},
               {"name": "parkplace",
               "price": "$350",
                "color": "#024abf",
@@ -326,7 +333,7 @@ all_props = [{"name": "start_and_go"},
                "housecost": "$200",
                "posthotel": "$200"
               },
-              {"name": "luxurytax", "tax": "$75"},
+              {"name": "luxurytax", "displayname": "LUXURY TAX", "tax": "$75"},
               {"name": "boardwalk",
               "price": "$400",
                "color": "#024abf",
@@ -348,10 +355,26 @@ railway = [
             ["Own 3 railroads", 100], //own 3 rr's 
             ["Own 4 railroads", 200], //own 4 rr's 
             ["Mortage Value", 100], //mortgage
-            ]
+          ]
 
-prop_name_list = all_props.map (elm => elm.name)
-prop_dname_list = prop_name_list = all_props.map (elm => elm.displayname)
+chance =  [
+                {id: 0,  description: "Advance to Go."},
+                {id: 1,  description: "Advance to Illinois Ave. If you pass Go, collect $200."},
+                {id: 2,  description: "Advance to St. Charles Place. If you pass Go, collect $200."},
+                {id: 3,  description: "Advance token to nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and pay owner a total 10 times the amount thrown."},
+                {id: 4,  description: "Advance token to the nearest Railroad and pay owner twice the rental to which he/she  is otherwise entitled. If Railroad is unowned, you may buy it from the Bank."},
+                {id: 5,  description: "Bank pays you dividend of $50. "},
+                {id: 6,  description: "Get out of Jail Free. This card may be kept until needed, or traded/sold."},
+                {id: 7,  description: "Go Back Three  Spaces. "},
+                {id: 8,  description: "Go to Jail. Go directly to Jail. Do not pass GO, do not collect $200. "},
+                {id: 9,  description: "Make general repairs on all your property: For each house pay $25, For each hotel  $100."},
+                {id: 10, description: "Pay poor tax of $15."},
+                {id: 11, description: "Take a trip to Reading Railroad.  If you pass Go, collect $200. "},
+                {id: 12, description: "Take a walk on the Boardwalk. Advance token to Boardwalk. "},
+                {id: 13, description: "You have been elected Chairman of the Board. Pay each player $50. "},
+                {id: 14, description: "Your building loan matures. Receive $150."},
+                {id: 15, description: "You have won a crossword competition. Collect $100."}
+          ]
 
 var DICE_ROLL = -1
 var NEXT_POS = -1
@@ -539,36 +562,41 @@ function addPropertyToCurrentPlayer (card) {
     newlabel.innerHTML = "Price:          " + all_props [NEXT_POS].price
     newcard.appendChild (newlabel)
 
-    newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-    newlabel.innerHTML = "Rent with no houses:           " + all_props [NEXT_POS].rent
-    newcard.appendChild (newlabel)
+    if (property_ownable.includes (NEXT_POS) && !property_utility.includes (NEXT_POS)) {
+        newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
+        newlabel.innerHTML = "Rent with no houses:           " + all_props [NEXT_POS].rent
+        newcard.appendChild (newlabel)
+    
+        newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
+        newlabel.innerHTML = "Rent per house: " 
+        newcard.appendChild (newlabel)
+    
+        newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
+        newlabel.innerHTML =   all_props [NEXT_POS].house1 + "/"
+                             + all_props [NEXT_POS].house2 + "/"
+                             + all_props [NEXT_POS].house3 + "/"
+                             + all_props [NEXT_POS].house4
+        newcard.appendChild (newlabel)
+    
+        newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
+        newlabel.innerHTML = "Rent with a hotel:   " + all_props [NEXT_POS].hotel
+        newcard.appendChild (newlabel)
+    
+        newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
+        newlabel.innerHTML = "Mortgage:       " + all_props [NEXT_POS].mortgage
+        newcard.appendChild (newlabel)
+    
+        newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
+        newlabel.innerHTML = "Cost per house: " + all_props [NEXT_POS].housecost
+        newcard.appendChild (newlabel)
 
-    newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-    newlabel.innerHTML = "Rent per house: " 
-    newcard.appendChild (newlabel)
+        newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
+        newlabel.innerHTML = "Cost of hotel:  " + all_props [NEXT_POS].posthotel
+        newcard.appendChild (newlabel)
+    }
+    else if (property_utility.includes (NEXT_POS)) {
 
-    newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-    newlabel.innerHTML =   all_props [NEXT_POS].house1 + "/"
-                         + all_props [NEXT_POS].house2 + "/"
-                         + all_props [NEXT_POS].house3 + "/"
-                         + all_props [NEXT_POS].house4
-    newcard.appendChild (newlabel)
-
-    newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-    newlabel.innerHTML = "Rent with a hotel:   " + all_props [NEXT_POS].hotel
-    newcard.appendChild (newlabel)
-
-    newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-    newlabel.innerHTML = "Mortgage:       " + all_props [NEXT_POS].mortgage
-    newcard.appendChild (newlabel)
-
-    newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-    newlabel.innerHTML = "Cost per house: " + all_props [NEXT_POS].housecost
-    newcard.appendChild (newlabel)
-
-    newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
-    newlabel.innerHTML = "Cost of hotel:  " + all_props [NEXT_POS].posthotel
-    newcard.appendChild (newlabel)
+    }
 
     newcardwhole.appendChild (newcardtop)
     newcardwhole.appendChild (newcard)
@@ -576,18 +604,20 @@ function addPropertyToCurrentPlayer (card) {
 }
 
 function landed_on_tile () {
-    $("#unowned_card_title").html (prop_dname_list [NEXT_POS])
+    $("#unowned_card_title").html (all_props [NEXT_POS].displayname)
     $(".dialogcardtop").css ('background-color',   all_props [NEXT_POS].color)
     $("#dialog_price").html  ("Price:          " + all_props [NEXT_POS].price)
-    $("#dialog_rent").html   ("Rent:           " + all_props [NEXT_POS].rent)
-    $("#dialog_h1").html     ("With 1 house:   " + all_props [NEXT_POS].house1)
-    $("#dialog_h2").html     ("With 2 houses:  " + all_props [NEXT_POS].house2)
-    $("#dialog_h3").html     ("With 3 houses:  " + all_props [NEXT_POS].house3)
-    $("#dialog_h4").html     ("With 4 houses:  " + all_props [NEXT_POS].house4)
-    $("#dialog_hl").html     ("With a hotel:   " + all_props [NEXT_POS].hotel)
-    $("#dialog_mort").html   ("Mortgage:       " + all_props [NEXT_POS].mortgage)
-    $("#dialog_hc").html     ("Cost per house: " + all_props [NEXT_POS].housecost)
-    $("#dialog_hotelc").html ("Cost of hotel:  " + all_props [NEXT_POS].posthotel)
+    if (property_ownable.includes (NEXT_POS)) {
+        $("#dialog_rent").html   ("Rent:           " + all_props [NEXT_POS].rent)
+        $("#dialog_h1").html     ("With 1 house:   " + all_props [NEXT_POS].house1)
+        $("#dialog_h2").html     ("With 2 houses:  " + all_props [NEXT_POS].house2)
+        $("#dialog_h3").html     ("With 3 houses:  " + all_props [NEXT_POS].house3)
+        $("#dialog_h4").html     ("With 4 houses:  " + all_props [NEXT_POS].house4)
+        $("#dialog_hl").html     ("With a hotel:   " + all_props [NEXT_POS].hotel)
+        $("#dialog_mort").html   ("Mortgage:       " + all_props [NEXT_POS].mortgage)
+        $("#dialog_hc").html     ("Cost per house: " + all_props [NEXT_POS].housecost)
+        $("#dialog_hotelc").html ("Cost of hotel:  " + all_props [NEXT_POS].posthotel)
+    }
 
     $("#overlay").css ('opacity', '0')
     $("#diedialog").css ('display', 'none')
