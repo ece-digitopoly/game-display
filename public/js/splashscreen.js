@@ -74,16 +74,70 @@ function newGameScroll (dir) {
     }
 }
 
-function changeNewGameTextbox (ch) {
+function changeNewGameTextbox (ch, dir) {
     switch (ch) {
-        case 0:            
-            break;
+        case 0:
+            switch ($(".turnnumber-hover").html()) 
+            {
+                case "50":
+                    $(".turnnumber-hover").html (dir == 'up' ? "500" : "100")
+                    break;
+                case "100":
+                    $(".turnnumber-hover").html (dir == 'up' ? "50" : "200")
+                    break;
+                case "200":
+                    $(".turnnumber-hover").html (dir == 'up' ? "100" : "300")
+                    break;
+                case "300":
+                    $(".turnnumber-hover").html (dir == 'up' ? "200" : "500")
+                    break;
+                case "500":
+                    $(".turnnumber-hover").html (dir == 'up' ? "300" : "50")
+                    break;
+            }
+        break;
 
         case 1:
-            break;
+            switch ($(".playerfundch-hover").html()) 
+            {
+                case "$1000":
+                    $(".playerfundch-hover").html (dir == 'up' ? "$5000" : "$1500")
+                    break;
+                case "$1500":
+                    $(".playerfundch-hover").html (dir == 'up' ? "$1000" : "$2000")
+                    break;
+                case "$2000":
+                    $(".playerfundch-hover").html (dir == 'up' ? "$1500" : "$2500")
+                    break;
+                case "$2500":
+                    $(".playerfundch-hover").html (dir == 'up' ? "$2000" : "$5000")
+                    break;
+                case "$5000":
+                    $(".playerfundch-hover").html (dir == 'up' ? "$2500" : "$1000")
+                    break;
+            }
+        break;
 
         case 2:
-            break;
+            switch ($(".bankfund-hover").html()) 
+            {
+                case "$10000":
+                    $(".bankfund-hover").html (dir == 'up' ? "$100000" : "$15000")
+                    break;
+                case "$15000":
+                    $(".bankfund-hover").html (dir == 'up' ? "$10000" : "$30000")
+                    break;
+                case "$30000":
+                    $(".bankfund-hover").html (dir == 'up' ? "$15000" : "$50000")
+                    break;
+                case "$50000":
+                    $(".bankfund-hover").html (dir == 'up' ? "$30000" : "$100000")
+                    break;
+                case "$100000":
+                    $(".bankfund-hover").html (dir == 'up' ? "$50000" : "$10000")
+                    break;
+            }
+        break;
     }
 }
 

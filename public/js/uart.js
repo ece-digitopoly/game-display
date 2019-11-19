@@ -129,7 +129,27 @@ function uart_control (stm32_json) {
                     mainMenuScroll (stm32_json ['direction'])
                 break;
                 case 'NEWGAME':
-                    newGameScroll (stm32_json ['direction'])
+                    check_turnnumber = $(".turnnumber-hover").length != 0 && $(".turnnumber-hover").css ('text-decoration').includes ('underline')
+                    check_playerfundch = $(".playerfundch-hover").length != 0 && $(".playerfundch-hover").css ('text-decoration').includes ('underline')
+                    check_bankfund = $(".bankfund-hover").length != 0 && $(".bankfund-hover").css ('text-decoration').includes ('underline')
+
+                    // if the option was selected, scroll through the options for each setting
+                    if (check_turnnumber) {
+                        changeNewGameTextbox (0, stm32_json ['direction'])
+                        window.turnnumber = $(".turnnumber-hover").html()
+                    }
+                    else if (check_playerfundch) {
+                        changeNewGameTextbox (1, stm32_json ['direction'])  
+                        window.playerfundch = $(".playerfundch-hover").html()
+                    }
+                    else if (check_bankfund) {
+                        changeNewGameTextbox (2, stm32_json ['direction'])
+                        window.bankfund = $(".bankfund-hover").html()
+                    }
+                    // else scroll through settings
+                    else {
+                        newGameScroll (stm32_json ['direction'])
+                    }
                 break;
                 case 'GAME':
                     gamePlayKeyHandler (stm32_json)
@@ -175,9 +195,27 @@ function uart_control (stm32_json) {
                 break;
                 case 'NEWGAME':
                     switch (window.newGameSelectedOption) {
-                        case 0: break;
-                        case 1: break;
-                        case 2: break;
+                        case 0: if ($(".turnnumber-hover").css ('text-decoration').includes ('underline')) {
+                            $(".turnnumber-hover").css ('text-decoration', '');
+                        }
+                        else {
+                            $(".turnnumber-hover").css ('text-decoration', 'underline');
+                        }
+                        break;
+                        case 1: if ($(".playerfundch-hover").css ('text-decoration').includes ('underline')) {
+                            $(".playerfundch-hover").css ('text-decoration', '');
+                        }
+                        else {
+                            $(".playerfundch-hover").css ('text-decoration', 'underline');
+                        }
+                        break;
+                        case 2: if ($(".bankfund-hover").css ('text-decoration').includes ('underline')) {
+                            $(".bankfund-hover").css ('text-decoration', '');
+                        }
+                        else {
+                            $(".bankfund-hover").css ('text-decoration', 'underline');
+                        }
+                        break;
                         case 3: $(".btn-hc-createnewgame").toggleClass ("btn-hc-createnewgame btn-nhc-createnewgame"); hideNewGamePhaseOutToGameBoard(); break;
                         case 4: $(".btn-hc-backmainmenu").toggleClass ("btn-hc-backmainmenu btn-nhc-backmainmenu"); hideNewGamePhaseOutToMainMenu(); break;
                     }
