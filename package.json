@@ -8,11 +8,11 @@
     "electron": "^6.1.4",
     "electron-shutdown-command": "0.0.8",
     "popper.js": "^1.15.0",
-    "raspi-serial": "^5.1.0",
+    "raspi-serial": "^5.1.2",
     "serialport": "^7.1.5"
   },
   "devDependencies": {
-    "electron-rebuild": "^1.8.6",
+    "electron-rebuild": "^1.8.8",
     "jquery": "^3.4.1"
   },
   "scripts": {

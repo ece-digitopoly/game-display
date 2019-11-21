@@ -209,27 +209,27 @@ function showGameBoard() {
     $("#border").css ('display', 'flex')
     $("#border").css ('opacity', '1')
     init_board()
-
+	
     // TESTING SETTIMEOUT FUNCTIONS REMOVE AFTER DEPLOYMENT
-    setTimeout (function () {
-        uart_control ({"action": "dicerolling"})
-    }, 2000)
+    // setTimeout (function () {
+    //     uart_control ({"action": "dicerolling"})
+    // }, 2000)
     
-    setTimeout (function () {
-        uart_control ({"action": "diceroll", "roll": ROLL_TEST.toString()})
-    }, 4000)    // Assume motor movement has started
+    // setTimeout (function () {
+    //     uart_control ({"action": "diceroll", "roll": ROLL_TEST.toString()})
+    // }, 4000)    // Assume motor movement has started
     
-    setTimeout (function () {
-        uart_control ({"action": "dialog", "options": ["Buy", "Ignore"], "text": "This property is unowned."})
-    }, 6000)    // Assume motor movement has ended
+    // setTimeout (function () {
+    //     uart_control ({"action": "dialog", "options": ["Buy", "Ignore"], "text": "This property is unowned."})
+    // }, 6000)    // Assume motor movement has ended
 
-    setTimeout (function () {
-        uart_control ({"action": "piecemoved"})
-    }, 6100)
-
+    // setTimeout (function () {
+    //     uart_control ({"action": "piecemoved"})
+    // }, 6100)
+    /*
     setTimeout (function () {
         uart_control ({"action": "update", "property": "9", "player": "0", "text": "This property is unowned."})
         uart_control ({"action": "update", "player": "0", "money": "1400"})
     }, 9000)    // Assume motor movement has started
-
+	*/
 }

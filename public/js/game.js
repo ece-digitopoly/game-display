@@ -494,14 +494,14 @@ function gamePlayKeyHandler (uartjson) {
     if (uartjson ['action'] == 'scroll' && uartjson ['direction'] == 'up') {
         switch (BOARD_STATE) {
             case "PLAYERWAIT":
-                if ($("#btn_buy").classList[0] == 'btn-hover') {
-                    $("#btn_buy").toggleClass ('btn-hover btn')
-                    $("#btn_ignore").toggleClass ('btn btn-hover')
-                }
-                else {
-                    $("#btn_ignore").toggleClass ('btn-hover btn')
-                    $("#btn_buy").toggleClass ('btn btn-hover')
-                }
+                // if ($("#btn_buy").classList().includes ('btn-hover')) {
+                    $("#btn_buy").toggleClass ('btn-hover')
+                    $("#btn_ignore").toggleClass ('btn-hover')
+                // }
+                // else {
+                //     $("#btn_ignore").toggleClass ('btn-hover btn')
+                //     $("#btn_buy").toggleClass ('btn btn-hover')
+                // }
             break;
         }
     }
@@ -509,14 +509,14 @@ function gamePlayKeyHandler (uartjson) {
     {
         switch (BOARD_STATE) {
             case "PLAYERWAIT":
-                if ($("#btn_buy").classList[0] == 'btn-hover') {
-                    $("#btn_ignore").toggleClass ('btn-hover btn')
-                    $("#btn_buy").toggleClass ('btn btn-hover')
-                }
-                else {
-                    $("#btn_buy").toggleClass ('btn-hover btn')
-                    $("#btn_ignore").toggleClass ('btn btn-hover')
-                }
+                // if ($("#btn_buy").classList().includes ('btn-hover')) {
+                    $("#btn_ignore").toggleClass ('btn-hover')
+                    $("#btn_buy").toggleClass ('btn-hover')
+                // }
+                // else {
+                    // $("#btn_buy").toggleClass ('btn-hover btn')
+                    // $("#btn_ignore").toggleClass ('btn btn-hover')
+                // }
             break;
         }
     }
@@ -524,7 +524,7 @@ function gamePlayKeyHandler (uartjson) {
     {
         switch (BOARD_STATE) {
             case "PLAYERWAIT":
-                if ($("#btn_buy").classList()[0] == 'btn-hover') {
+                if ($("#btn_buy").classList().includes ('btn-hover')) {
                     // buy property
                     // if (property_ownable.includes (NEXT_POS))
                     //     addPropertyToCurrentPlayer (NEXT_POS)
@@ -533,8 +533,8 @@ function gamePlayKeyHandler (uartjson) {
                     // }
                     window.stm32.write ("BUY")
                 }
-                else if ($("#btn_ignore").classList()[0] == 'btn-hover') {
-                    window.stm32.write ("IGNORE")
+                else if ($("#btn_ignore").classList().includes ('btn-hover')) {
+                    window.stm32.write ("IGN")
                 }
                 // else, ignore property, and move to next player
                 // same action is performed even if player buys property
@@ -565,10 +565,7 @@ function handleDiceRoll (roll) {
 
 function addPropertyToCurrentPlayer (card, player) {
     // Extract money
-
     player = parseInt (player)
-
-    console.log (PLAYER_HOLDINGS)
 
     if (PLAYER_HOLDINGS [player].length == 0) {
         $('#cards_' + (player + 1).toString()).children()[0].remove()
@@ -650,12 +647,6 @@ function landed_on_tile () {
     $("#landed_unowned_dialog").css ('display', 'flex')
     $("#overlay").css ('opacity', '1')
 
-    if (document.getElementById ('btn_buy').classList [0] == "btn") {
-        $('#btn_buy').toggleClass ('btn btn-hover')
-    }
-    if (document.getElementById ('btn_ignore').classList [0] == "btn-hover") {
-        $('#btn_ignore').toggleClass ('btn btn-hover')
-    }
     BOARD_STATE = "PLAYERWAIT"
 }
 

@@ -10,7 +10,7 @@
 
 */
 
-// const Serial = require('raspi-serial').Serial;
+const Serial = require('raspi-serial').Serial;
 
 function btnhover (btn) {
     switch (btn) {
@@ -81,6 +81,7 @@ function btnhover (btn) {
 
 function init_uart () {
     window.stm32 = new Serial({baudRate: 115200});
+    window.stm32.message = ""
     window.stm32.open(() => {
         window.stm32.on('data', (data) => {
             try {
@@ -94,10 +95,10 @@ function init_uart () {
                 window.stm32.message += data.toString().replace (/\0/g, '')
                 if (window.stm32.message.includes ("}")) {
                     try {
-                        uart_control (JSON.parse (window.stm32.message))
+                        uart_control (JSON.parse (window.stm32.message.slice (0, window.stm32.message.indexOf ("}") + 1)))
                     }
                     catch (ex) {
-                        console.log ("Full message received, but still got an error parsing: " + window.stm32.message)
+                        console.log ("Full message received, but still got an error parsing: " + (window.stm32.message.slice (0, window.stm32.message.indexOf ("}") + 1)))
                     }
                     window.stm32.message = ""
                 }
@@ -169,11 +170,16 @@ function uart_control (stm32_json) {
             break;
         case 'dialog':
             $(".btn-dialog").remove();
-            stm32_json ['options'].forEach(element => {
+            stm32_json ['options'].forEach((element, index, arr) => {
                 newbutton = document.createElement ('button')
                 newbutton.className = 'btn btn-dialog'
                 newbutton.innerHTML = element
                 newbutton.id = 'btn_' + element.toLowerCase()
+                if (index == 0)
+                {   
+                    newbutton.className += ' btn-hover'
+                    console.log (newbutton)
+                }
                 $("#landed_unowned_dialog").append (newbutton)
             });
             break;
@@ -234,7 +240,7 @@ function uart_control (stm32_json) {
                             $(".bankfund-hover").css ('text-decoration', 'underline');
                         }
                         break;
-                        case 3: $(".btn-hc-createnewgame").toggleClass ("btn-hc-createnewgame btn-nhc-createnewgame"); hideNewGamePhaseOutToGameBoard(); break;
+                        case 3: $(".btn-hc-createnewgame").toggleClass ("btn-hc-createnewgame btn-nhc-createnewgame"); window.stm32.write ("STR"); hideNewGamePhaseOutToGameBoard(); break;
                         case 4: $(".btn-hc-backmainmenu").toggleClass ("btn-hc-backmainmenu btn-nhc-backmainmenu"); hideNewGamePhaseOutToMainMenu(); break;
                     }
                 break;
@@ -246,4 +252,4 @@ function uart_control (stm32_json) {
     }
 }
 
-// init_uart()
+init_uart()

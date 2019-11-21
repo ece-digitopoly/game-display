@@ -242,7 +242,7 @@ body {
 }
 #dialog1, #dialog2, #fundtext1, #fundtext2, #fundtext3, #fundtext4, #playername {
     display: flex;
-    min-width: 100px;
+    min-width: 110px;
     font-size: 22px;
     color: #eee;
 }
