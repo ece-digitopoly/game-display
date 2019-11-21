@@ -10,11 +10,51 @@
 
 */
 
-const Serial = require('raspi-serial').Serial;
+// When running on Pi
+// const Serial = require('raspi-serial').Serial;
+
+// When not running on Pi
+window.stm32 = new Object()
+window.stm32.write = function (msg) { 
+    console.log (msg) 
+    if (msg == "STR") {
+        setTimeout (function () {
+            uart_control ({"action": "dicerolling"})
+        }, 2000)
+        
+        setTimeout (function () {
+            uart_control ({"action": "diceroll", "roll": ROLL_TEST.toString()})
+        }, 4000)    // Assume motor movement has started
+        
+        setTimeout (function () {
+            uart_control ({"action": "dialog", "options": ["Buy", "Ignore"], "text": "This property is unowned."})
+        }, 6000)    // Assume motor movement has ended
+    
+        setTimeout (function () {
+            uart_control ({"action": "piecemoved"})
+        }, 6100)
+    }
+    else if (msg == "BUY") {
+        setTimeout (function () {
+            uart_control ({"action": "update", "property": "9", "player": "0", "text": "This property is unowned."})
+            uart_control ({"action": "update", "player": "0", "money": "1400"})
+            uart_control ({"action": "dialog", "options": ["Trade/Build", "Mortgage", "End Turn"], "text": "This property is unowned."})
+        }, 1000)
+    }
+    else if (msg == "EPT") {    // End player turn
+        setTimeout (function () {
+            uart_control ({"action": "endturn", "player": CURRENT_PLAYER.toString()})
+        }, 500)
+        window.stm32.write ("STR")
+    }
+}
+
+String.prototype.replaceAll = function(target, replacement) {
+    return this.split(target).join(replacement);
+  };
 
 function btnhover (btn) {
     switch (btn) {
-
         /* Turn on button hover */
         case 0: 
             $(".btn-nhc-anew").toggleClass ("btn-nhc-anew btn-hc-anew"); window.mainMenuSelectedOption = 0
@@ -76,6 +116,15 @@ function btnhover (btn) {
             $(".btn-hc-backmainmenu").toggleClass ("btn-hc-backmainmenu btn-nhc-backmainmenu")
             break;
         /** **/
+    }
+}
+
+function createButtonID (name) {
+    if (name == "Trade/Build") {
+        return 'btn_trdbld'
+    }
+    else {
+        return 'btn_' + name.toLowerCase().replaceAll (" ", "")
     }
 }
 
@@ -174,14 +223,14 @@ function uart_control (stm32_json) {
                 newbutton = document.createElement ('button')
                 newbutton.className = 'btn btn-dialog'
                 newbutton.innerHTML = element
-                newbutton.id = 'btn_' + element.toLowerCase()
+                newbutton.id = createButtonID (element)
                 if (index == 0)
-                {   
                     newbutton.className += ' btn-hover'
-                    console.log (newbutton)
-                }
                 $("#landed_unowned_dialog").append (newbutton)
             });
+            break;
+        case 'endturn':
+            continue_play(stm32_json ['player'])
             break;
         case 'diceroll':
             handleDiceRoll (stm32_json ['roll'])
@@ -252,4 +301,4 @@ function uart_control (stm32_json) {
     }
 }
 
-init_uart()
+// init_uart()

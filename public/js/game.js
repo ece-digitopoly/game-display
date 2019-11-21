@@ -424,45 +424,33 @@ property_ownable    = [1, 3, 5, 6, 8, 9, 11, 12, 13, 14, 15,
                        16, 18, 19, 21, 23, 24, 25, 26, 27,
                        28, 29, 31, 32, 34, 35, 37, 39]
 
-$.fn.classList = function() {return this[0].className.split(/\s+/);};
+$.fn.classList = function() {
+    try {
+        return this[0].className.split(/\s+/);
+    }
+    catch {
+        return []
+    }
+};
 
 // testing function
-function continue_play() {
-    property_held = PLAYER_HOLDINGS[0].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST)
-    property_held = PLAYER_HOLDINGS[1].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
-    property_held = PLAYER_HOLDINGS[2].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
-    property_held = PLAYER_HOLDINGS[3].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
-    
-    while (!property_ownable.includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held) {
-        ROLL_TEST += 1
-        property_held = PLAYER_HOLDINGS[0].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST)
-        property_held = PLAYER_HOLDINGS[1].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
-        property_held = PLAYER_HOLDINGS[2].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
-        property_held = PLAYER_HOLDINGS[3].includes (CURRENT_POSITION [CURRENT_PLAYER] + ROLL_TEST) || property_held
-    }
+function continue_play(player) {
+    $("#overlay").css ('opacity', 0)
+    player = parseInt (player) + 1
+    CURRENT_PLAYER = player
 
-    player = CURRENT_PLAYER == 0 ? "ship" : 
-             CURRENT_PLAYER == 1 ? "boot" :    
-             CURRENT_PLAYER == 2 ? "car" : "dog"
+    player = player == 0 ? "ship" : 
+             player == 1 ? "boot" :    
+             player == 2 ? "car" : "dog"
 
     $("#dialog1").html ("It's the " + player + "'s turn!")
     $("#dialog2").html ("Roll the dice to move the piece.")
+    console.log ($("#dialog1").html())
 
     $("#diedialog").css ('display', 'flex')
     $("#landed_unowned_dialog").css ('display', 'none')
     $("#overlay").css ('opacity', 1)
-
-    setTimeout (function () {
-        uart_control ({"action": "dicerolling"})
-    }, 2000)
-    
-    setTimeout (function () {
-        uart_control ({"action": "diceroll", "roll": ROLL_TEST.toString()})
-    }, 4000)    // Assume motor movement has started
-    
-    setTimeout (function () {
-        uart_control ({"action": "piecemoved"})
-    }, 6000)    // Assume motor movement has started
+    console.log ($("#dialog1").html())
 }
 
 function init_board () {
@@ -491,17 +479,25 @@ function init_board () {
 function gamePlayKeyHandler (uartjson) {
     // console.log (uartjson ['action'])
     // console.log (uartjson ['direction'])
+    buttons = []
+    for (var elm in $(".btn-dialog")) {
+        if (!isNaN (elm)) {
+            buttons.push ($(".btn-dialog") [parseInt (elm)])
+        }
+    }
+    hover_index = buttons.indexOf (buttons.find (element => [...element.classList].includes ('btn-hover')))
+
     if (uartjson ['action'] == 'scroll' && uartjson ['direction'] == 'up') {
         switch (BOARD_STATE) {
             case "PLAYERWAIT":
-                // if ($("#btn_buy").classList().includes ('btn-hover')) {
-                    $("#btn_buy").toggleClass ('btn-hover')
-                    $("#btn_ignore").toggleClass ('btn-hover')
-                // }
-                // else {
-                //     $("#btn_ignore").toggleClass ('btn-hover btn')
-                //     $("#btn_buy").toggleClass ('btn btn-hover')
-                // }
+                if (hover_index == 0) {
+                    buttons [0].classList.replace ('btn-hover', 'btn')                   // Turn first button off
+                    buttons [buttons.length - 1].classList.replace ('btn', 'btn-hover')  // Turn last button on
+                }
+                else {
+                    buttons [hover_index].classList.replace ('btn-hover', 'btn')     // Turn button off
+                    buttons [hover_index - 1].classList.replace ('btn', 'btn-hover')               // Turn prev button on
+                }
             break;
         }
     }
@@ -509,14 +505,14 @@ function gamePlayKeyHandler (uartjson) {
     {
         switch (BOARD_STATE) {
             case "PLAYERWAIT":
-                // if ($("#btn_buy").classList().includes ('btn-hover')) {
-                    $("#btn_ignore").toggleClass ('btn-hover')
-                    $("#btn_buy").toggleClass ('btn-hover')
-                // }
-                // else {
-                    // $("#btn_buy").toggleClass ('btn-hover btn')
-                    // $("#btn_ignore").toggleClass ('btn btn-hover')
-                // }
+                if (hover_index == buttons.length - 1) {
+                    buttons [hover_index].classList.replace ('btn-hover', 'btn')  // Turn last button off
+                    buttons [0].classList.replace ('btn', 'btn-hover')                   // Turn first button on
+                }
+                else {
+                    buttons [hover_index].classList.replace ('btn-hover', 'btn')     // Turn button off
+                    buttons [hover_index + 1].classList.replace ('btn', 'btn-hover') // Turn next button on
+                }
             break;
         }
     }
@@ -525,21 +521,17 @@ function gamePlayKeyHandler (uartjson) {
         switch (BOARD_STATE) {
             case "PLAYERWAIT":
                 if ($("#btn_buy").classList().includes ('btn-hover')) {
-                    // buy property
-                    // if (property_ownable.includes (NEXT_POS))
-                    //     addPropertyToCurrentPlayer (NEXT_POS)
-                    // else {
-                    //     alert ("unhandled card --> " + NEXT_POS.toString())
-                    // }
                     window.stm32.write ("BUY")
                 }
                 else if ($("#btn_ignore").classList().includes ('btn-hover')) {
                     window.stm32.write ("IGN")
                 }
-                // else, ignore property, and move to next player
-                // same action is performed even if player buys property
-                // CURRENT_PLAYER = CURRENT_PLAYER == 3 ? 0 : CURRENT_PLAYER + 1
-                // continue_play()
+                else if ($("#btn_trdbld").classList().includes ('btn-hover')) {
+                    window.stm32.write ("TBC")  // Trade/build combined
+                }
+                else if ($("#btn_endturn").classList().includes ('btn-hover')) {
+                    window.stm32.write ("EPT")  // Trade/build combined
+                }
             break;
         }
     }
