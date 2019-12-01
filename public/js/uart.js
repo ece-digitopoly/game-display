@@ -11,47 +11,56 @@
 */
 
 // When running on Pi
-// const Serial = require('raspi-serial').Serial;
-
-// When not running on Pi
-window.stm32 = new Object()
-window.stm32.write = function (msg) { 
-    console.log (msg) 
-    if (msg == "STR") {
-        setTimeout (function () {
-            uart_control ({"action": "dicerolling"})
-        }, 2000)
+if (process.platform == 'linux') {
+    var Serial = require('raspi-serial').Serial;
+    init_uart()
+}
+else {
+    // When not running on Pi
+    window.stm32 = new Object()
+    window.stm32.write = function (msg) { 
+        console.log (msg) 
+        if (msg == "STR") {
+            setTimeout (function () {
+                uart_control ({"action": "dicerolling"})
+            }, 2000)
+            
+            setTimeout (function () {
+                uart_control ({"action": "diceroll", "roll": ROLL_TEST.toString()})
+            }, 4000)    // Assume motor movement has started
+            
+            setTimeout (function () {
+                uart_control ({"action": "dialog", "options": ["Buy", "Ignore"], "text": "This property is unowned."})
+            }, 6000)    // Assume motor movement has ended
         
-        setTimeout (function () {
-            uart_control ({"action": "diceroll", "roll": ROLL_TEST.toString()})
-        }, 4000)    // Assume motor movement has started
-        
-        setTimeout (function () {
-            uart_control ({"action": "dialog", "options": ["Buy", "Ignore"], "text": "This property is unowned."})
-        }, 6000)    // Assume motor movement has ended
-    
-        setTimeout (function () {
-            uart_control ({"action": "piecemoved"})
-        }, 6100)
-    }
-    else if (msg == "BUY") {
-        setTimeout (function () {
-            uart_control ({"action": "update", "property": "9", "player": "0", "text": "This property is unowned."})
-            uart_control ({"action": "update", "player": "0", "money": "1400"})
-            uart_control ({"action": "dialog", "options": ["Trade/Build", "Mortgage", "End Turn"], "text": "This property is unowned."})
-        }, 1000)
-    }
-    else if (msg == "EPT") {    // End player turn
-        setTimeout (function () {
-            uart_control ({"action": "endturn", "player": CURRENT_PLAYER.toString()})
-        }, 500)
-        window.stm32.write ("STR")
+            setTimeout (function () {
+                uart_control ({"action": "piecemoved"})
+            }, 6100)
+        }
+        else if (msg == "BUY") {
+            setTimeout (function () {
+                uart_control ({"action": "update", "property": "9", "player": CURRENT_PLAYER.toString(), "text": "This property is unowned."})
+                uart_control ({"action": "update", "player": CURRENT_PLAYER.toString(), "money": "1400"})
+                uart_control ({"action": "dialog", "options": ["Trade/Build", "Mortgage", "End Turn"], "text": "This property is unowned."})
+            }, 1000)
+        }
+        else if (msg == "EPT") {    // End player turn
+            setTimeout (function () {
+                uart_control ({"action": "endturn", "player": CURRENT_PLAYER.toString()})
+            }, 500)
+            window.stm32.write ("STR")
+        }
     }
 }
+
 
 String.prototype.replaceAll = function(target, replacement) {
     return this.split(target).join(replacement);
   };
+
+function stm32_write (msg) {
+    setTimeout (function () { window.stm32.write (msg) }, 250)
+}
 
 function btnhover (btn) {
     switch (btn) {
@@ -129,7 +138,7 @@ function createButtonID (name) {
 }
 
 function init_uart () {
-    window.stm32 = new Serial({baudRate: 115200});
+    window.stm32 = new Serial({baudRate: 115200, port: '/dev/ttyS0'});
     window.stm32.message = ""
     window.stm32.open(() => {
         window.stm32.on('data', (data) => {
@@ -143,16 +152,18 @@ function init_uart () {
                 console.log (data.toString())
                 window.stm32.message += data.toString().replace (/\0/g, '')
                 if (window.stm32.message.includes ("}")) {
+                    window.stm32.message = window.stm32.message.slice (window.stm32.message.indexOf ("{"), window.stm32.message.indexOf ("}") + 1) 
                     try {
-                        uart_control (JSON.parse (window.stm32.message.slice (0, window.stm32.message.indexOf ("}") + 1)))
+                        uart_control (JSON.parse (window.stm32.message))
                     }
                     catch (ex) {
-                        console.log ("Full message received, but still got an error parsing: " + (window.stm32.message.slice (0, window.stm32.message.indexOf ("}") + 1)))
+                        console.log ("Full message received, but still got an error parsing: " + window.stm32.message)
                     }
                     window.stm32.message = ""
                 }
             }
         });
+        stm32_write ("PWR");
     });
 }
 
@@ -207,7 +218,7 @@ function uart_control (stm32_json) {
             }
         break;
         case 'dicerolling':
-            detectedDiceRoll ()
+            detectedDiceRoll()
             break;
         case 'update':
             if (stm32_json ['property'] && stm32_json ['player'])
@@ -230,10 +241,12 @@ function uart_control (stm32_json) {
             });
             break;
         case 'endturn':
+            $("#diedialog").css ('transform', stm32_json ['player'] == '1' ? 'rotate(180deg)' : 'rotate(0deg)')
+            $("#landed_unowned_dialog").css ('transform', stm32_json ['player'] == '1' ? 'rotate(180deg)' : 'rotate(0deg)')
             continue_play(stm32_json ['player'])
             break;
         case 'diceroll':
-            handleDiceRoll (stm32_json ['roll'])
+            handleDiceRoll (stm32_json ['roll'], stm32_json ['position'], stm32_json ['ccc_id'])
             break;
         case 'piecemoved':
             landed_on_tile()
@@ -289,7 +302,7 @@ function uart_control (stm32_json) {
                             $(".bankfund-hover").css ('text-decoration', 'underline');
                         }
                         break;
-                        case 3: $(".btn-hc-createnewgame").toggleClass ("btn-hc-createnewgame btn-nhc-createnewgame"); window.stm32.write ("STR"); hideNewGamePhaseOutToGameBoard(); break;
+                        case 3: $(".btn-hc-createnewgame").toggleClass ("btn-hc-createnewgame btn-nhc-createnewgame"); hideNewGamePhaseOutToGameBoard(); break;
                         case 4: $(".btn-hc-backmainmenu").toggleClass ("btn-hc-backmainmenu btn-nhc-backmainmenu"); hideNewGamePhaseOutToMainMenu(); break;
                     }
                 break;
@@ -301,4 +314,3 @@ function uart_control (stm32_json) {
     }
 }
 
-// init_uart()

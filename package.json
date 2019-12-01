@@ -5,19 +5,25 @@
   "main": "main.js",
   "dependencies": {
     "bootstrap": "^4.3.1",
+    "chokidar": "^3.3.0",
     "electron": "^6.1.4",
     "electron-shutdown-command": "0.0.8",
     "popper.js": "^1.15.0",
+    "raspi": "^6.0.1",
+    "raspi-io": "^10.0.4",
     "raspi-serial": "^5.1.2",
-    "serialport": "^7.1.5"
+    "serialport": "^7.1.5",
+    "sudo-prompt": "^9.1.1",
+    "v8-compile-cache": "^2.1.0"
   },
   "devDependencies": {
+    "devtron": "^1.4.0",
     "electron-rebuild": "^1.8.8",
     "jquery": "^3.4.1"
   },
   "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "export ELECTRON_MODE=PRODUCTION; electron .",
+    "test": "export ELECTRON_MODE=DEBUG; electron --inspect=9229 ."
   },
   "repository": {
     "type": "git",

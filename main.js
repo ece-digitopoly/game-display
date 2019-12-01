@@ -1,12 +1,18 @@
+require('v8-compile-cache');
 const electron = require ('electron')
-// Need to check serialport module compile on non-electron base
-// const serial = require ('raspi-serial') // require in here because apparently loading only in the HTML will load the wrong version or something idk
-const {app, BrowserWindow} = electron
 const cp = require ('child_process')
+const fs = require ('fs')
+
+// Need to check serialport module compile on non-electron base
+if (process.platform == 'linux') {
+  const serial = require ('raspi-serial') // require in here because apparently loading only in the HTML will load the wrong version or something idk
+  cp.spawn ('xdotool', ['mousemove', '1000', '1000'])
+
+}
+const {app, BrowserWindow} = electron
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
-// cp.spawn ('xdotool', ['mousemove', '1000', '1000'])
 
 function createWindow () {
   // Create the browser window.
@@ -35,7 +41,20 @@ function createWindow () {
 
   win.on ('ready-to-show', function () {
 	win.show();
-	win.focus();
+  win.focus();
+
+  if (process.env ['ELECTRON_MODE'] === 'PRODUCTION') {
+
+  }
+  else if (process.env ['ELECTRON_MODE'] === 'DEBUG') {
+    require ('devtron').install()
+  }
+  
+  setInterval (function () {
+    if (fs.readFileSync ('/sys/class/gpio/gpio18/value').toString() == '0\n') {
+      win.reload()
+    }
+  }, 100);
   });
 
   // Emitted when the window is closed.
@@ -60,6 +79,11 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+/*
+app.relaunch() // relaunch on exit
+app.exit()
+*/
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the

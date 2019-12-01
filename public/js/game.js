@@ -358,47 +358,45 @@ railway = [
           ]
 
     chance =  [
-                {id: 0,  description: "Advance to Go."},
-                {id: 1,  description: "Advance to Illinois Ave. If you pass Go, collect $200."},
-                {id: 2,  description: "Advance to St. Charles Place. If you pass Go, collect $200."},
-                {id: 3,  description: "Advance token to nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and pay owner a total 10 times the amount thrown."},
-                {id: 4,  description: "Advance token to the nearest Railroad and pay owner twice the rental to which he/she  is otherwise entitled. If Railroad is unowned, you may buy it from the Bank."},
-                {id: 5,  description: "Bank pays you dividend of $50. "},
-                {id: 6,  description: "Get out of Jail Free. This card may be kept until needed, or traded/sold."},
-                {id: 7,  description: "Go Back Three  Spaces. "},
-                {id: 8,  description: "Go to Jail. Go directly to Jail. Do not pass GO, do not collect $200. "},
-                {id: 9,  description: "Make general repairs on all your property: For each house pay $25, For each hotel  $100."},
-                {id: 10, description: "Pay poor tax of $15."},
-                {id: 11, description: "Take a trip to Reading Railroad.  If you pass Go, collect $200. "},
-                {id: 12, description: "Take a walk on the Boardwalk. Advance token to Boardwalk. "},
-                {id: 13, description: "You have been elected Chairman of the Board. Pay each player $50. "},
-                {id: 14, description: "Your building loan matures. Receive $150."},
-                {id: 15, description: "You have won a crossword competition. Collect $100."}
+                {description: "Advance to Go."},
+                {description: "Advance to Illinois Ave. If you pass Go, collect $200."},
+                {description: "Advance to St. Charles Place. If you pass Go, collect $200."},
+                {description: "Advance token to nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and pay owner a total 10 times the amount thrown."},
+                {description: "Advance token to the nearest Railroad and pay owner twice the rental to which he/she  is otherwise entitled. If Railroad is unowned, you may buy it from the Bank."},
+                {description: "Bank pays you dividend of $50. "},
+                {description: "Go Back Three Spaces. "},
+                {description: "Go to Jail. Go directly to Jail. Do not pass GO, do not collect $200. "},
+                {description: "Make general repairs on all your property: For each house pay $25, For each hotel  $100."},
+                {description: "Pay poor tax of $15."},
+                {description: "Take a trip to Reading Railroad.  If you pass Go, collect $200. "},
+                {description: "Take a walk on the Boardwalk. Advance token to Boardwalk. "},
+                {description: "You have been elected Chairman of the Board. Pay each player $50. "},
+                {description: "Your building loan matures. Receive $150."},
+                {description: "You have won a crossword competition. Collect $100."}
             ]
 
 commchest = [
-                {id: 0, description: ""}
-                // Advance to "Go". Collect $200.
-                // Bank error in your favor. Collect $200. 
-                // Doctor's fees. Pay $50. 
-                // From sale of stock you get $50.
-                // Get Out of Jail Free. This card may be kept until needed or sold/traded. 
-                // Go to Jail. Go directly to jail. Do not pass Go, Do not collect $200. 
-                // Grand Opera Night {Opening in previous US editions, not in the deck in UK editions}. Collect $50 from every player for opening night seats. 
-                // Holiday {Xmas} Fund matures. Receive {Collect} $100. 
-                // Income tax refund. Collect $20. 
-                // It is {It's} your birthday. Collect $10 from every player. {Mr. Monopoly holds his gift and gets a M sign on the top of it.}
-                // Life insurance matures – Collect $100 
-                // Hospital Fees. Pay $50. {Pay hospital fees of $100.} {Pay hospital $100.} 
-                // School fees. Pay $50. {Pay school fees {tax} of $150} 
-                // Receive $25 consultancy fee. {Receive for services $25.} 
-                // You are assessed for street repairs: Pay $40 per house and $115 per hotel you own. 
-                // You have won second prize in a beauty contest. Collect $10. 
-                // You inherit $100.  
+                {description: "Advance to \"Go\". Collect $200."},
+                {description: "Bank error in your favor. Collect $200. "},
+                {description: "Doctor's fees. Pay $50. "},
+                {description: "From sale of stock you get $50."},
+                {description: "Go to Jail. Go directly to jail. Do not pass Go, Do not collect $200. "},
+                {description: "Grand Opera Night. Collect $50 from every player for opening night seats. "},
+                {description: "Holiday Fund matures. Receive $100. "},
+                {description: "Income tax refund. Collect $20."},
+                {description: "It is your birthday. Collect $10 from every player."},
+                {description: "Life insurance matures – Collect $100."},
+                {description: "Hospital Fees. Pay $50."},
+                {description: "School fees. Pay $50."},
+                {description: "Receive $25 consultancy fee."},
+                {description: "You are assessed for street repairs: Pay $40 per house and $115 per hotel you own."},
+                {description: "You have won second prize in a beauty contest. Collect $10. "},
+                {description: "You inherit $100."}
             ]
 
 var DICE_ROLL = -1
 var NEXT_POS = -1
+var CCC_ID = -1
 var CURRENT_POSITION = [0, 0, 0, 0]     // for four players
 var CURRENT_PLAYER = 0                  // zero index - 0, 1, 2, 3
 var BOARD_STATE = "INIT"
@@ -419,7 +417,7 @@ property_parking    = 20
 property_taxes      = [4, 38]
 property_community  = [2, 17, 33]
 property_chance     = [7, 22, 36]
-property_utility    = [12]
+property_utility    = [12, 28]
 property_ownable    = [1, 3, 5, 6, 8, 9, 11, 12, 13, 14, 15,
                        16, 18, 19, 21, 23, 24, 25, 26, 27,
                        28, 29, 31, 32, 34, 35, 37, 39]
@@ -436,7 +434,6 @@ $.fn.classList = function() {
 // testing function
 function continue_play(player) {
     $("#overlay").css ('opacity', 0)
-    player = parseInt (player) + 1
     CURRENT_PLAYER = player
 
     player = player == 0 ? "ship" : 
@@ -521,16 +518,16 @@ function gamePlayKeyHandler (uartjson) {
         switch (BOARD_STATE) {
             case "PLAYERWAIT":
                 if ($("#btn_buy").classList().includes ('btn-hover')) {
-                    window.stm32.write ("BUY")
+                    stm32_write ("BUY")
                 }
                 else if ($("#btn_ignore").classList().includes ('btn-hover')) {
-                    window.stm32.write ("IGN")
+                    stm32_write ("IGN")
                 }
                 else if ($("#btn_trdbld").classList().includes ('btn-hover')) {
-                    window.stm32.write ("TBC")  // Trade/build combined
+                    stm32_write ("TBC")  // Trade/build combined
                 }
                 else if ($("#btn_endturn").classList().includes ('btn-hover')) {
-                    window.stm32.write ("EPT")  // Trade/build combined
+                    stm32_write ("EPT")  // End Player Turn
                 }
             break;
         }
@@ -544,21 +541,21 @@ function detectedDiceRoll () {
     $("#dialog2").html ("Waiting for roll...")
 }
 
-function handleDiceRoll (roll) {
+function handleDiceRoll (roll, nextpos, ccc_id) {
     BOARD_STATE = "DICERECV"
     $("#rolldie").attr ("src", "public/images/die.png")
     $("#dialog1").html ("Dice roll received!")
     $("#dialog2").html ("Roll was " + roll + "!")
 
-    DICE_ROLL = parseInt (roll)
-    current_player_pos = CURRENT_POSITION [CURRENT_PLAYER]
-    NEXT_POS = DICE_ROLL + current_player_pos > 27 ? (27 - DICE_ROLL + current_player_pos) : DICE_ROLL + current_player_pos
+    NEXT_POS = parseInt (nextpos)
+    CCC_ID = ccc_id
 }
 
 function addPropertyToCurrentPlayer (card, player) {
     // Extract money
     player = parseInt (player)
 
+    console.log (player)
     if (PLAYER_HOLDINGS [player].length == 0) {
         $('#cards_' + (player + 1).toString()).children()[0].remove()
     }
@@ -567,7 +564,7 @@ function addPropertyToCurrentPlayer (card, player) {
     newcardwhole = document.createElement ("div"); newcardwhole.classList.add ("card")
     newcardtop = document.createElement ("div"); newcardtop.classList.add ("cardtop")
     newcard = document.createElement ("div"); newcard.classList.add ("cardbot")
-    newcardtop.style ['background-color'] = all_props [card].color
+    newcardtop.style ['background-color'] = all_props [card].color || '#fff'
 
     newlabel = document.createElement ("label"); newlabel.classList.add ("cardtext")
     newlabel.innerHTML = all_props [card].displayname
@@ -609,35 +606,166 @@ function addPropertyToCurrentPlayer (card, player) {
         newlabel.innerHTML = "Cost of hotel:  " + all_props [card].posthotel
         newcard.appendChild (newlabel)
     }
-    else if (property_utility.includes (card)) {
-
-    }
 
     newcardwhole.appendChild (newcardtop)
     newcardwhole.appendChild (newcard)
-    $('#cards_' + (CURRENT_PLAYER + 1).toString()).append (newcardwhole)
+    $('#cards_' + (player + 1).toString()).append (newcardwhole)
 }
 
 function landed_on_tile () {
-    $("#unowned_card_title").html (all_props [NEXT_POS].displayname)
-    $(".dialogcardtop").css ('background-color',   all_props [NEXT_POS].color)
-    $("#dialog_price").html  ("Price:          " + all_props [NEXT_POS].price)
-    if (property_ownable.includes (NEXT_POS)) {
+    $("#diedialog").css ('display', 'none')
+    $("#dialogccc").css ('display', 'none')
+    $("#overlay").css ('opacity', '0')
+
+    if (property_ownable.includes (NEXT_POS) && !property_utility.includes (NEXT_POS)) {
+        $("#unowned_card_title").html (all_props [NEXT_POS].displayname)
+        $(".dialogcardtop").css ('background-color',   all_props [NEXT_POS].color)
+        $("#dialog_price").html  ("Price:          " + all_props [NEXT_POS].price)
+
         $("#dialog_rent").html   ("Rent:           " + all_props [NEXT_POS].rent)
         $("#dialog_h1").html     ("With 1 house:   " + all_props [NEXT_POS].house1)
         $("#dialog_h2").html     ("With 2 houses:  " + all_props [NEXT_POS].house2)
+        $("#dialog_h2").css ('font-size', '')
         $("#dialog_h3").html     ("With 3 houses:  " + all_props [NEXT_POS].house3)
         $("#dialog_h4").html     ("With 4 houses:  " + all_props [NEXT_POS].house4)
         $("#dialog_hl").html     ("With a hotel:   " + all_props [NEXT_POS].hotel)
         $("#dialog_mort").html   ("Mortgage:       " + all_props [NEXT_POS].mortgage)
         $("#dialog_hc").html     ("Cost per house: " + all_props [NEXT_POS].housecost)
         $("#dialog_hotelc").html ("Cost of hotel:  " + all_props [NEXT_POS].posthotel)
+        $("#dialogcard").css ('display', 'flex')
+        $("#dialogccc").css ('display', 'none')
+    }
+    else if (property_utility.includes (NEXT_POS)) {
+        $("#unowned_card_title").html (all_props [NEXT_POS].displayname)
+        $(".dialogcardtop").css ('background-color',   "#fff")
+        $(".dialogcardtop").css ('border-bottom', '1')
+        $("#dialog_price").html  ("Price:          " + all_props [NEXT_POS].price)
+
+        $("#dialog_rent").html ("Rent:           " + all_props [NEXT_POS].rent)
+        $("#dialog_h1").html ("")
+        $("#dialog_h2").html ("")
+        $("#dialog_h2").css ('font-size', '')
+        $("#dialog_h3").html ("")
+        $("#dialog_h4").html ("")
+        $("#dialog_hl").html ("")
+        $("#dialog_mort").html ("Mortgage:       " + all_props [NEXT_POS].mortgage)
+        $("#dialog_hc").html ("")
+        $("#dialog_hotelc").html ("")
+        $("#dialogcard").css ('display', 'flex')
+        $("#dialogccc").css ('display', 'none')
+    }
+    else if (property_go == NEXT_POS) {
+        $("#unowned_card_title").html ("Passing Go!")
+        $(".dialogcardtop").css ('background-color', "#8fff9e")
+        $(".dialogcardtop").css ('border', '')
+        $("#dialog_price").html  ("")
+        $("#dialog_rent").html ("")
+        $("#dialog_h1").html ("")
+        $("#dialog_h2").html ("Collect $200!")
+        $("#dialog_h2").css ('font-size', '16px')
+        $("#dialog_h3").html ("")
+        $("#dialog_h4").html ("")
+        $("#dialog_hl").html ("")
+        $("#dialog_mort").html ("")
+        $("#dialog_hc").html ("")
+        $("#dialog_hotelc").html ("")
+        $("#dialogcard").css ('display', 'flex')
+        $("#dialogccc").css ('display', 'none')
+    }
+    else if (property_jail == NEXT_POS) {
+        $("#unowned_card_title").html ("Passing through Jail!")
+        $(".dialogcardtop").css ('background-color', "#ffc58f")
+        $(".dialogcardtop").css ('border', '')
+        $("#dialog_price").html  ("")
+        $("#dialog_rent").html ("")
+        $("#dialog_h1").html ("")
+        $("#dialog_h2").html ("")
+        $("#dialog_h2").css ('font-size', '16px')
+        $("#dialog_h3").html ("")
+        $("#dialog_h4").html ("")
+        $("#dialog_hl").html ("")
+        $("#dialog_mort").html ("")
+        $("#dialog_hc").html ("")
+        $("#dialog_hotelc").html ("")
+        $("#dialogcard").css ('display', 'flex')
+        $("#dialogccc").css ('display', 'none')
+    }
+    else if (property_gotojail == NEXT_POS) {
+        $("#unowned_card_title").html ("Go to Jail!")
+        $(".dialogcardtop").css ('background-color', "#ff8080")
+        $(".dialogcardtop").css ('border', '')
+        $("#dialog_price").html  ("")
+        $("#dialog_rent").html ("")
+        $("#dialog_h1").html ("")
+        $("#dialog_h2").html ("Oh no, you've been arrested!")
+        $("#dialog_h2").css ('font-size', '16px')
+        $("#dialog_h3").html ("")
+        $("#dialog_h4").html ("")
+        $("#dialog_hl").html ("")
+        $("#dialog_mort").html ("")
+        $("#dialog_hc").html ("")
+        $("#dialog_hotelc").html ("")
+        $("#dialogcard").css ('display', 'flex')
+        $("#dialogccc").css ('display', 'none')
+    }
+    else if (property_parking == NEXT_POS) {
+        $("#unowned_card_title").html ("Free Parking!")
+        $(".dialogcardtop").css ('background-color', "#8fff9e")
+        $(".dialogcardtop").css ('border', '')
+        $("#dialog_price").html  ("")
+        $("#dialog_rent").html ("")
+        $("#dialog_h1").html ("")
+        $("#dialog_h2").html ("")
+        $("#dialog_h2").css ('font-size', '')
+        $("#dialog_h3").html ("")
+        $("#dialog_h4").html ("")
+        $("#dialog_hl").html ("")
+        $("#dialog_mort").html ("")
+        $("#dialog_hc").html ("")
+        $("#dialog_hotelc").html ("")
+        $("#dialogcard").css ('display', 'flex')
+        $("#dialogccc").css ('display', 'none')
+    }
+    else if (property_taxes.includes (NEXT_POS)) {
+        $("#unowned_card_title").html (all_props [NEXT_POS].displayname)
+        $(".dialogcardtop").css ('background-color', "#8fff9e")
+        $(".dialogcardtop").css ('border', '')
+        $("#dialog_price").html  ("")
+        $("#dialog_rent").html ("")
+        $("#dialog_h1").html ("")
+        $("#dialog_h2").html ("Pay a tax of " + all_props [NEXT_POS].tax + ".")
+        $("#dialog_h2").css ('font-size', '16px')
+        $("#dialog_h3").html ("")
+        $("#dialog_h4").html ("")
+        $("#dialog_hl").html ("")
+        $("#dialog_mort").html ("")
+        $("#dialog_hc").html ("")
+        $("#dialog_hotelc").html ("")
+        $("#dialogcard").css ('display', 'flex')
+        $("#dialogccc").css ('display', 'none')
+    }
+    else if (property_community.includes (NEXT_POS) || property_chance.includes (NEXT_POS)) {
+        $(".ccc-data").remove();
+
+        ccc_label = document.createElement ("label")
+        ccc_label.classList.add ('ccc-data')
+        ccc_label.classList.add ('ccc-title')
+        ccc_label.style ['background-color'] = "#bfebff"
+        ccc_label.innerHTML = property_community.includes (NEXT_POS) ? 'Community Chest' : 'Chance'
+        $("#dialogccc").append (ccc_label)
+
+        ccc_label = document.createElement ("label")
+        ccc_label.classList.add ('ccc-data')
+        ccc_label.classList.add ('ccc-text')
+        ccc_label.innerHTML = chance [CCC_ID]['description']
+        $("#dialogcard").css ('display', 'none')
+        $("#dialogccc").append (ccc_label)
+        $("#dialogccc").css ('display', 'flex')
+        CCC_ID = -1
     }
 
-    $("#overlay").css ('opacity', '0')
-    $("#diedialog").css ('display', 'none')
     $("#landed_unowned_dialog").css ('display', 'flex')
-    $("#overlay").css ('opacity', '1')
+    setTimeout (function () { $("#overlay").css ('opacity', '1') }, 10)
 
     BOARD_STATE = "PLAYERWAIT"
 }
