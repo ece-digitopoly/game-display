@@ -399,7 +399,7 @@ var NEXT_POS = -1
 var CCC_ID = -1
 var CURRENT_POSITION = [0, 0, 0, 0]     // for four players
 var CURRENT_PLAYER = 0                  // zero index - 0, 1, 2, 3
-var BOARD_STATE = "INIT"
+window.BOARD_STATE = "INIT"
 
 var ROLL_TEST = 9
 
@@ -409,6 +409,8 @@ var PLAYER_HOLDINGS = [
     [], // player 3
     []  // player 4
 ]
+
+var SCROLL_PROPS = []
 
 property_go         = 0
 property_jail       = 10
@@ -431,26 +433,7 @@ $.fn.classList = function() {
     }
 };
 
-// testing function
-function continue_play(player) {
-    $("#overlay").css ('opacity', 0)
-    CURRENT_PLAYER = player
-
-    player = player == 0 ? "ship" : 
-             player == 1 ? "boot" :    
-             player == 2 ? "car" : "dog"
-
-    $("#dialog1").html ("It's the " + player + "'s turn!")
-    $("#dialog2").html ("Roll the dice to move the piece.")
-    console.log ($("#dialog1").html())
-
-    $("#diedialog").css ('display', 'flex')
-    $("#landed_unowned_dialog").css ('display', 'none')
-    $("#overlay").css ('opacity', 1)
-    console.log ($("#dialog1").html())
-}
-
-function init_board () {
+function init_board() {
     $("#diedialog").css ('display', 'flex')
     $("#landed_unowned_dialog").css ('display', 'none')
     $("#overlay").css ('opacity', 1)
@@ -482,11 +465,11 @@ function gamePlayKeyHandler (uartjson) {
             buttons.push ($(".btn-dialog") [parseInt (elm)])
         }
     }
-    hover_index = buttons.indexOf (buttons.find (element => [...element.classList].includes ('btn-hover')))
 
     if (uartjson ['action'] == 'scroll' && uartjson ['direction'] == 'up') {
-        switch (BOARD_STATE) {
+        switch (window.BOARD_STATE) {
             case "PLAYERWAIT":
+                hover_index = buttons.indexOf (buttons.find (element => [...element.classList].includes ('btn-hover')))
                 if (hover_index == 0) {
                     buttons [0].classList.replace ('btn-hover', 'btn')                   // Turn first button off
                     buttons [buttons.length - 1].classList.replace ('btn', 'btn-hover')  // Turn last button on
@@ -495,13 +478,38 @@ function gamePlayKeyHandler (uartjson) {
                     buttons [hover_index].classList.replace ('btn-hover', 'btn')     // Turn button off
                     buttons [hover_index - 1].classList.replace ('btn', 'btn-hover')               // Turn prev button on
                 }
-            break;
+                break;
+            case "SCROLLCARD": 
+                SCROLL_PROPS.push (SCROLL_PROPS.shift())
+                displayProps (SCROLL_PROPS)
+                break;
+            case "AUCTIONEND":
+                if ($("[id^=afund][class*=afund-click]").hasClass ("afund-click")) {
+                    val = parseInt ($("[id^=afund][class*=afund-click] label")[0].innerHTML)
+                    val = val == 9 ? 0 : val + 1;
+                    $("[id^=afund][class*=afund-click] label")[0].innerHTML = val.toString()
+                }
+                else {
+                    done = false
+                    Array.from ($("[id^=afund]")).forEach (function (e, i, a) {
+                        if (!done && e.classList.contains ("btn-hover")) {
+                            if (i == 0)
+                                a[6].classList.add ('btn-hover')
+                            else
+                                a[i - 1].classList.add ('btn-hover')
+                            e.classList.remove ('btn-hover')
+                            done = true
+                        }
+                    })
+                }
+                break;
         }
     }
     else if (uartjson ['action'] == 'scroll' && uartjson ['direction'] == 'down')
     {
-        switch (BOARD_STATE) {
+        switch (window.BOARD_STATE) {
             case "PLAYERWAIT":
+                hover_index = buttons.indexOf (buttons.find (element => [...element.classList].includes ('btn-hover')))
                 if (hover_index == buttons.length - 1) {
                     buttons [hover_index].classList.replace ('btn-hover', 'btn')  // Turn last button off
                     buttons [0].classList.replace ('btn', 'btn-hover')                   // Turn first button on
@@ -511,44 +519,116 @@ function gamePlayKeyHandler (uartjson) {
                     buttons [hover_index + 1].classList.replace ('btn', 'btn-hover') // Turn next button on
                 }
             break;
+            case "SCROLLCARD": 
+                SCROLL_PROPS.unshift (SCROLL_PROPS.pop())
+                displayProps (SCROLL_PROPS)
+                break;
+            case "AUCTIONEND":
+                if ($("[id^=afund][class*=afund-click]").hasClass ("afund-click")) {
+                    val = parseInt ($("[id^=afund][class*=afund-click] label")[0].innerHTML)
+                    val = val == 0 ? 9 : val - 1;
+                    $("[id^=afund][class*=afund-click] label")[0].innerHTML = val.toString()
+                }
+                else {
+                    done = false
+                    Array.from ($("[id^=afund]")).forEach (function (e, i, a) {
+                        if (!done && e.classList.contains ("btn-hover")) {
+                            if (i == 6)
+                                a[0].classList.add ('btn-hover')
+                            else
+                                a[i + 1].classList.add ('btn-hover')
+                            e.classList.remove ('btn-hover')
+                            done = true
+                        }
+                    })
+                }
+                break;
         }
     }
     else if (uartjson ['action'] == 'click')
     {
-        switch (BOARD_STATE) {
+        switch (window.BOARD_STATE) {
             case "PLAYERWAIT":
-                if ($("#btn_buy").classList().includes ('btn-hover')) {
-                    stm32_write ("BUY")
+                actionlist = [
+                               ["#btn_buy", "BUY"], 
+                               ["#btn_auction", "AUC"], 
+                               ["#btn_manageproperties", "MPP"], 
+                               ["#btn_endturn", "EPT"],
+                               ["#btn_mortage", "MTG"],
+                               ["#btn_build", "BLD"],
+                               ["#btn_trade", "TRD"]
+                             ]
+                actionlist.forEach (function (e) {
+                    if ($(e[0]).length != 0 && $(e[0]).classList().includes ('btn-hover')) {
+                        stm32_write (e[1])
+                    }
+                })
+                break;
+            case "SCROLLCARD":
+                stm32_write ("S" + (parseInt (SCROLL_PROPS[0]) < 10 ? ("0" + SCROLL_PROPS[0]) : SCROLL_PROPS[0]))
+                break;
+            case "AUCTION":
+                $("#overlay").css ('transform', uartjson ['player'] == '1' ? 'rotate(180deg)' : 'rotate(0deg)')
+                $(".aucdesc").remove()
+                $("#auction br").remove()
+                $("#auctionfund").css ('display', "flex")
+                $("#auctionbutton").css ('display', "flex")
+                window.BOARD_STATE = "AUCTIONEND"
+                $("[id^=afund]").css ('transition', 'background-color 0.5s')
+                $("#afund6").addClass ('btn-hover')
+                break;
+            case "AUCTIONEND":
+                trans1 = ""
+                trans2 = ""
+                if ($("#afund0").hasClass ('btn-hover')) {  //finish button
+                    Array.from ($("[id^=afund]")).slice (0, 6).forEach (function (e, i, a) {
+                        if (i < 3)
+                            trans1 += e.children[0].innerHTML
+                        else
+                            trans2 += e.children[0].innerHTML
+                    })
+                    stm32_write (trans1)
+                    setTimeout (function () { stm32_write (trans2) }, 200)
+                    $("#overlay").css ('transform', uartjson ['player'] == '1' ? 'rotate(180deg)' : 'rotate(0deg)')
+                    $("#landed_unowned_dialog").css ('display', 'flex')
+                    $("#auction").css ('display', 'none')
                 }
-                else if ($("#btn_ignore").classList().includes ('btn-hover')) {
-                    stm32_write ("IGN")
+                else {
+                    $("[id^=afund][class*=btn-hover]").toggleClass ('afund-click')
                 }
-                else if ($("#btn_trdbld").classList().includes ('btn-hover')) {
-                    stm32_write ("TBC")  // Trade/build combined
-                }
-                else if ($("#btn_endturn").classList().includes ('btn-hover')) {
-                    stm32_write ("EPT")  // End Player Turn
-                }
-            break;
+                break;
         }
     }
 }
 
 function detectedDiceRoll () {
-    BOARD_STATE = "DICEWAIT"
+    window.BOARD_STATE = "DICEWAIT"
     $("#rolldie").attr ("src", "public/images/die.gif")
     $("#dialog1").html ("Dice roll detected!")
     $("#dialog2").html ("Waiting for roll...")
 }
 
 function handleDiceRoll (roll, nextpos, ccc_id) {
-    BOARD_STATE = "DICERECV"
+    window.BOARD_STATE = "DICERECV"
     $("#rolldie").attr ("src", "public/images/die.png")
     $("#dialog1").html ("Dice roll received!")
     $("#dialog2").html ("Roll was " + roll + "!")
 
     NEXT_POS = parseInt (nextpos)
     CCC_ID = ccc_id
+}
+
+function deletePropertyFromCurrentPlayer (card, player) {
+    Array.from ($('#cards_' + (player + 1)).children()).forEach (function (e) {
+        if (e.children[0].children[0].innerHTML == all_props [card].displayname) {
+            e.remove()
+        }
+    })
+    PLAYER_HOLDINGS [parseInt (player)] = PLAYER_HOLDINGS [parseInt (player)].filter (e => e != card)
+    if (PLAYER_HOLDINGS[parseInt (player)].length == 0) {
+        newcard = $("#cardfresh").clone()
+        newcard.appendTo ('#cards_' + (player + 1))
+    }
 }
 
 function addPropertyToCurrentPlayer (card, player) {
@@ -612,153 +692,174 @@ function addPropertyToCurrentPlayer (card, player) {
     $('#cards_' + (player + 1).toString()).append (newcardwhole)
 }
 
-function landed_on_tile () {
+function displayProps (props) {
+    $("#dialogcardset .dialogcard").remove()
+    $(".btn-dialog").remove()
+
+    SCROLL_PROPS = props
+    for (var i = 0; i < props.length; i++)
+        landed_on_tile (i, parseInt (props[i]), props.length - 1 - i)
+}
+
+function landed_on_tile (id, prop, end) {
     $("#diedialog").css ('display', 'none')
+    $("#dialogcardset").css ('display', 'none')
     $("#dialogccc").css ('display', 'none')
     $("#overlay").css ('opacity', '0')
 
-    if (property_ownable.includes (NEXT_POS) && !property_utility.includes (NEXT_POS)) {
-        $("#unowned_card_title").html (all_props [NEXT_POS].displayname)
-        $(".dialogcardtop").css ('background-color',   all_props [NEXT_POS].color)
-        $("#dialog_price").html  ("Price:          " + all_props [NEXT_POS].price)
+    if (id < 0) { // start fresh with a new card, since we landed on it
+        id = 0
+    }
+    else {
 
-        $("#dialog_rent").html   ("Rent:           " + all_props [NEXT_POS].rent)
-        $("#dialog_h1").html     ("With 1 house:   " + all_props [NEXT_POS].house1)
-        $("#dialog_h2").html     ("With 2 houses:  " + all_props [NEXT_POS].house2)
-        $("#dialog_h2").css ('font-size', '')
-        $("#dialog_h3").html     ("With 3 houses:  " + all_props [NEXT_POS].house3)
-        $("#dialog_h4").html     ("With 4 houses:  " + all_props [NEXT_POS].house4)
-        $("#dialog_hl").html     ("With a hotel:   " + all_props [NEXT_POS].hotel)
-        $("#dialog_mort").html   ("Mortgage:       " + all_props [NEXT_POS].mortgage)
-        $("#dialog_hc").html     ("Cost per house: " + all_props [NEXT_POS].housecost)
-        $("#dialog_hotelc").html ("Cost of hotel:  " + all_props [NEXT_POS].posthotel)
-        $("#dialogcard").css ('display', 'flex')
-        $("#dialogccc").css ('display', 'none')
     }
-    else if (property_utility.includes (NEXT_POS)) {
-        $("#unowned_card_title").html (all_props [NEXT_POS].displayname)
-        $(".dialogcardtop").css ('background-color',   "#fff")
-        $(".dialogcardtop").css ('border-bottom', '1')
-        $("#dialog_price").html  ("Price:          " + all_props [NEXT_POS].price)
 
-        $("#dialog_rent").html ("Rent:           " + all_props [NEXT_POS].rent)
-        $("#dialog_h1").html ("")
-        $("#dialog_h2").html ("")
-        $("#dialog_h2").css ('font-size', '')
-        $("#dialog_h3").html ("")
-        $("#dialog_h4").html ("")
-        $("#dialog_hl").html ("")
-        $("#dialog_mort").html ("Mortgage:       " + all_props [NEXT_POS].mortgage)
-        $("#dialog_hc").html ("")
-        $("#dialog_hotelc").html ("")
-        $("#dialogcard").css ('display', 'flex')
+    dialogcard = $("#dialogcardfresh").clone()
+    dialogcard[0].style ['display'] = 'flex'
+    dialogcard[0].id = "dialogcard" + id.toString()
+    dialogcard[0].style ['z-index'] = (end - id).toString()
+    dialogcard.appendTo ("#dialogcardset")
+
+    if (property_ownable.includes (prop) && !property_utility.includes (prop)) {
+        $("#" + dialogcard[0].id + " .dialogcardtop #unowned_card_title").html (all_props [prop].displayname)
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('background-color',   all_props [prop].color)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_price").html  ("Price:          " + all_props [prop].price)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_rent").html   ("Rent:           " + all_props [prop].rent)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h1").html     ("With 1 house:   " + all_props [prop].house1)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").html     ("With 2 houses:  " + all_props [prop].house2)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").css ('font-size', '')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h3").html     ("With 3 houses:  " + all_props [prop].house3)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h4").html     ("With 4 houses:  " + all_props [prop].house4)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hl").html     ("With a hotel:   " + all_props [prop].hotel)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_mort").html   ("Mortgage:       " + all_props [prop].mortgage)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hc").html     ("Cost per house: " + all_props [prop].housecost)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hotelc").html ("Cost of hotel:  " + all_props [prop].posthotel)
+        $("#dialogcardset").css ('display', 'flex')
         $("#dialogccc").css ('display', 'none')
     }
-    else if (property_go == NEXT_POS) {
-        $("#unowned_card_title").html ("Passing Go!")
-        $(".dialogcardtop").css ('background-color', "#8fff9e")
-        $(".dialogcardtop").css ('border', '')
-        $("#dialog_price").html  ("")
-        $("#dialog_rent").html ("")
-        $("#dialog_h1").html ("")
-        $("#dialog_h2").html ("Collect $200!")
-        $("#dialog_h2").css ('font-size', '16px')
-        $("#dialog_h3").html ("")
-        $("#dialog_h4").html ("")
-        $("#dialog_hl").html ("")
-        $("#dialog_mort").html ("")
-        $("#dialog_hc").html ("")
-        $("#dialog_hotelc").html ("")
-        $("#dialogcard").css ('display', 'flex')
+    else if (property_utility.includes (prop)) {
+        $("#" + dialogcard[0].id + " .dialogcardtop #unowned_card_title").html (all_props [prop].displayname)
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('background-color',   "#fff")
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('border-bottom', '1')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_price").html  ("Price:          " + all_props [prop].price)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_rent").html ("Rent:           " + all_props [prop].rent)
+        $("#" + dialogcard[0].id + " .dialogcardbot q #dialog_h1").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").css ('font-size', '')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h3").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h4").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hl").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_mort").html ("Mortgage:       " + all_props [prop].mortgage)
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hc").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hotelc").html ("")
+        $("#dialogcardset").css ('display', 'flex')
         $("#dialogccc").css ('display', 'none')
     }
-    else if (property_jail == NEXT_POS) {
-        $("#unowned_card_title").html ("Passing through Jail!")
-        $(".dialogcardtop").css ('background-color', "#ffc58f")
-        $(".dialogcardtop").css ('border', '')
-        $("#dialog_price").html  ("")
-        $("#dialog_rent").html ("")
-        $("#dialog_h1").html ("")
-        $("#dialog_h2").html ("")
-        $("#dialog_h2").css ('font-size', '16px')
-        $("#dialog_h3").html ("")
-        $("#dialog_h4").html ("")
-        $("#dialog_hl").html ("")
-        $("#dialog_mort").html ("")
-        $("#dialog_hc").html ("")
-        $("#dialog_hotelc").html ("")
-        $("#dialogcard").css ('display', 'flex')
+    else if (property_go == prop) {
+        $("#" + dialogcard[0].id + " .dialogcardtop #unowned_card_title").html ("Passing Go!")
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('background-color', "#8fff9e")
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('border', '')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_price").html  ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_rent").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h1").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").html ("Collect $200!")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").css ('font-size', '16px')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h3").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h4").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hl").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_mort").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hc").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hotelc").html ("")
+        $("#dialogcardset").css ('display', 'flex')
         $("#dialogccc").css ('display', 'none')
     }
-    else if (property_gotojail == NEXT_POS) {
-        $("#unowned_card_title").html ("Go to Jail!")
-        $(".dialogcardtop").css ('background-color', "#ff8080")
-        $(".dialogcardtop").css ('border', '')
-        $("#dialog_price").html  ("")
-        $("#dialog_rent").html ("")
-        $("#dialog_h1").html ("")
-        $("#dialog_h2").html ("Oh no, you've been arrested!")
-        $("#dialog_h2").css ('font-size', '16px')
-        $("#dialog_h3").html ("")
-        $("#dialog_h4").html ("")
-        $("#dialog_hl").html ("")
-        $("#dialog_mort").html ("")
-        $("#dialog_hc").html ("")
-        $("#dialog_hotelc").html ("")
-        $("#dialogcard").css ('display', 'flex')
+    else if (property_jail == prop) {
+        $("#" + dialogcard[0].id + " .dialogcardtop #unowned_card_title").html ("Passing through Jail!")
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('background-color', "#ffc58f")
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('border', '')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_price").html  ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_rent").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h1").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").css ('font-size', '16px')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h3").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h4").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hl").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_mort").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hc").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hotelc").html ("")
+        $("#dialogcardset").css ('display', 'flex')
         $("#dialogccc").css ('display', 'none')
     }
-    else if (property_parking == NEXT_POS) {
-        $("#unowned_card_title").html ("Free Parking!")
-        $(".dialogcardtop").css ('background-color', "#8fff9e")
-        $(".dialogcardtop").css ('border', '')
-        $("#dialog_price").html  ("")
-        $("#dialog_rent").html ("")
-        $("#dialog_h1").html ("")
-        $("#dialog_h2").html ("")
-        $("#dialog_h2").css ('font-size', '')
-        $("#dialog_h3").html ("")
-        $("#dialog_h4").html ("")
-        $("#dialog_hl").html ("")
-        $("#dialog_mort").html ("")
-        $("#dialog_hc").html ("")
-        $("#dialog_hotelc").html ("")
-        $("#dialogcard").css ('display', 'flex')
+    else if (property_gotojail == prop) {
+        $("#" + dialogcard[0].id + " .dialogcardtop #unowned_card_title").html ("Go to Jail!")
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('background-color', "#ff8080")
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('border', '')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_price").html  ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_rent").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h1").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").css ('font-size', '16px')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").html ("Oh no, you've been arrested!")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h3").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h4").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hl").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_mort").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hc").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hotelc").html ("")
+        $("#dialogcardset").css ('display', 'flex')
         $("#dialogccc").css ('display', 'none')
     }
-    else if (property_taxes.includes (NEXT_POS)) {
-        $("#unowned_card_title").html (all_props [NEXT_POS].displayname)
-        $(".dialogcardtop").css ('background-color', "#8fff9e")
-        $(".dialogcardtop").css ('border', '')
-        $("#dialog_price").html  ("")
-        $("#dialog_rent").html ("")
-        $("#dialog_h1").html ("")
-        $("#dialog_h2").html ("Pay a tax of " + all_props [NEXT_POS].tax + ".")
-        $("#dialog_h2").css ('font-size', '16px')
-        $("#dialog_h3").html ("")
-        $("#dialog_h4").html ("")
-        $("#dialog_hl").html ("")
-        $("#dialog_mort").html ("")
-        $("#dialog_hc").html ("")
-        $("#dialog_hotelc").html ("")
-        $("#dialogcard").css ('display', 'flex')
+    else if (property_parking == prop) {
+        $("#" + dialogcard[0].id + " .dialogcardtop #unowned_card_title").html ("Free Parking!")
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('background-color', "#8fff9e")
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('border', '')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_price").html  ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_rent").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h1").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").css ('font-size', '')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h3").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h4").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hl").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_mort").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hc").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hotelc").html ("")
+        $("#dialogcardset").css ('display', 'flex')
         $("#dialogccc").css ('display', 'none')
     }
-    else if (property_community.includes (NEXT_POS) || property_chance.includes (NEXT_POS)) {
+    else if (property_taxes.includes (prop)) {
+        $("#" + dialogcard[0].id + " .dialogcardtop #unowned_card_title").html (all_props [prop].displayname)
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('background-color', "#8fff9e")
+        $("#" + dialogcard[0].id + " .dialogcardtop").css ('border', '')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_price").html  ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_rent").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h1").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").html ("Pay a tax of " + all_props [prop].tax + ".")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h2").css ('font-size', '16px')
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h3").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_h4").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hl").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_mort").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hc").html ("")
+        $("#" + dialogcard[0].id + " .dialogcardbot #dialog_hotelc").html ("")
+        $("#dialogcardset").css ('display', 'flex')
+        $("#dialogccc").css ('display', 'none')
+    }
+    else if (property_community.includes (prop) || property_chance.includes (prop)) {
         $(".ccc-data").remove();
 
         ccc_label = document.createElement ("label")
         ccc_label.classList.add ('ccc-data')
         ccc_label.classList.add ('ccc-title')
         ccc_label.style ['background-color'] = "#bfebff"
-        ccc_label.innerHTML = property_community.includes (NEXT_POS) ? 'Community Chest' : 'Chance'
+        ccc_label.innerHTML = property_community.includes (prop) ? 'Community Chest' : 'Chance'
         $("#dialogccc").append (ccc_label)
 
         ccc_label = document.createElement ("label")
         ccc_label.classList.add ('ccc-data')
         ccc_label.classList.add ('ccc-text')
         ccc_label.innerHTML = chance [CCC_ID]['description']
-        $("#dialogcard").css ('display', 'none')
+        $("#dialogcardset").css ('display', 'none')
         $("#dialogccc").append (ccc_label)
         $("#dialogccc").css ('display', 'flex')
         CCC_ID = -1
@@ -766,8 +867,6 @@ function landed_on_tile () {
 
     $("#landed_unowned_dialog").css ('display', 'flex')
     setTimeout (function () { $("#overlay").css ('opacity', '1') }, 10)
-
-    BOARD_STATE = "PLAYERWAIT"
 }
 
 // no need to receive which card to show - dice roll will determine that

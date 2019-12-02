@@ -7,7 +7,11 @@ const fs = require ('fs')
 if (process.platform == 'linux') {
   const serial = require ('raspi-serial') // require in here because apparently loading only in the HTML will load the wrong version or something idk
   cp.spawn ('xdotool', ['mousemove', '1000', '1000'])
-
+  setInterval (function () {
+    if (fs.readFileSync ('/sys/class/gpio/gpio18/value').toString() == '0\n') {
+      win.reload()
+    }
+  }, 100);
 }
 const {app, BrowserWindow} = electron
 // Keep a global reference of the window object, if you don't, the window will
@@ -42,19 +46,6 @@ function createWindow () {
   win.on ('ready-to-show', function () {
 	win.show();
   win.focus();
-
-  if (process.env ['ELECTRON_MODE'] === 'PRODUCTION') {
-
-  }
-  else if (process.env ['ELECTRON_MODE'] === 'DEBUG') {
-    require ('devtron').install()
-  }
-  
-  setInterval (function () {
-    if (fs.readFileSync ('/sys/class/gpio/gpio18/value').toString() == '0\n') {
-      win.reload()
-    }
-  }, 100);
   });
 
   // Emitted when the window is closed.

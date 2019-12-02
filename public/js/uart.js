@@ -18,6 +18,8 @@ if (process.platform == 'linux') {
 else {
     // When not running on Pi
     window.stm32 = new Object()
+    var TEST_PLAYER = 0
+    var CHARCODE = ""
     window.stm32.write = function (msg) { 
         console.log (msg) 
         if (msg == "STR") {
@@ -26,11 +28,11 @@ else {
             }, 2000)
             
             setTimeout (function () {
-                uart_control ({"action": "diceroll", "roll": ROLL_TEST.toString()})
+                uart_control ({"action": "diceroll", "roll": "1", "position": "1", "ccc_id": "3"})
             }, 4000)    // Assume motor movement has started
             
             setTimeout (function () {
-                uart_control ({"action": "dialog", "options": ["Buy", "Ignore"], "text": "This property is unowned."})
+                uart_control ({"action": "dialog", "options": ["Buy", "Auction"], "text": "This property is unowned."})
             }, 6000)    // Assume motor movement has ended
         
             setTimeout (function () {
@@ -39,16 +41,49 @@ else {
         }
         else if (msg == "BUY") {
             setTimeout (function () {
-                uart_control ({"action": "update", "property": "9", "player": CURRENT_PLAYER.toString(), "text": "This property is unowned."})
-                uart_control ({"action": "update", "player": CURRENT_PLAYER.toString(), "money": "1400"})
-                uart_control ({"action": "dialog", "options": ["Trade/Build", "Mortgage", "End Turn"], "text": "This property is unowned."})
+                uart_control ({"action": "update", "property": "1", "player": TEST_PLAYER.toString(), "text": "This property is unowned."})
+                uart_control ({"action": "update", "player": TEST_PLAYER.toString(), "money": "1400"})
+                uart_control ({"action": "dialog", "options": ["Trade", "Manage Properties", "End Turn"], "text": "This property is unowned."})
             }, 1000)
         }
-        else if (msg == "EPT") {    // End player turn
+        else if (msg == "AUC") {
             setTimeout (function () {
-                uart_control ({"action": "endturn", "player": CURRENT_PLAYER.toString()})
+                uart_control ({"action": "auction"})
+            }, 1000)
+        }
+        else if (msg == "MPP") {
+            setTimeout (function () {
+                uart_control ({"action": "manage", "properties": ["1", "3", "6", "8", "9"]})
+            }, 1000)
+        }
+        else if (msg[0] == "S") {
+            setTimeout (function () {
+                // uart_control ({"action": "dialog", "options": ["Mortgage", "Build", "End Turn"], "text": "This property is unowned."})
+                uart_control ({"action": "trademoney", "options": ["Mortgage", "Build", "End Turn"], "text": "This property is unowned."})
+            }, 1000)
+        }
+        else if (msg == "TRD") {
+            setTimeout (function () { 
+                uart_control ({"action": "manage", "properties": ["1", "3", "6", "8", "9"]})
+            }, 1000)   
+        }
+        else if (msg == "EPT") {    // End player turn
+            TEST_PLAYER = TEST_PLAYER == 0 ? 1 : 0
+            setTimeout (function () {
+                uart_control ({"action": "endturn", "player": TEST_PLAYER.toString()})
             }, 500)
             window.stm32.write ("STR")
+        }
+        else if (!isNaN (msg) && CHARCODE.length == 3) {
+            uart_control ({"action": "update", "player": TEST_PLAYER.toString(), "money": "2000"})
+            uart_control ({"action": "update", "player": (TEST_PLAYER == 0 ? 1 : 0).toString(), "money": "1400"})
+            uart_control ({"action": "update", "property": "-1", "player": TEST_PLAYER.toString(), "text": "This property is unowned."})
+            uart_control ({"action": "update", "property": "1", "player": (TEST_PLAYER == 0 ? 1 : 0).toString(), "text": "This property is unowned."})
+            // uart_control ({"action": "update", "property": "1", "player": TEST_PLAYER.toString(), "text": "This property is unowned."})
+            // uart_control ({"action": "dialog", "options": ["Trade", "Manage Properties", "End Turn"], "text": "This property is unowned."})
+        }
+        else if (!isNaN (msg)) {
+            CHARCODE += msg
         }
     }
 }
@@ -220,9 +255,32 @@ function uart_control (stm32_json) {
         case 'dicerolling':
             detectedDiceRoll()
             break;
+        case 'trademoney':
+            $("#landed_unowned_dialog").css ('display', 'none')
+            $("#diedialog").css ('display', 'none')
+            $("#auction").css ('display', 'flex')
+
+            $(".aucdesc").css('display', 'none')
+            $("#auction br").css('display', 'none')
+            $("#auctionfund").css ('display', "flex")
+            $("#auctionbutton").css ('display', "flex")
+            window.BOARD_STATE = "AUCTIONEND"
+            $("[id^=afund]").css ('transition', 'background-color 0.5s')
+            $("#afund6").addClass ('btn-hover')
+            break;
+        case 'auction':
+            $(".aucdesc").css('display', 'flex')
+            $("#auction br").css('display', 'flex')
+            $("#landed_unowned_dialog").css ('display', 'none')
+            $("#diedialog").css ('display', 'none')
+            $("#auction").css ('display', 'flex')
+            window.BOARD_STATE = "AUCTION"
+            break;
         case 'update':
-            if (stm32_json ['property'] && stm32_json ['player'])
+            if (stm32_json ['property'] && parseInt (stm32_json ['property']) > 0 && stm32_json ['player'])
                 addPropertyToCurrentPlayer (stm32_json ['property'], stm32_json ['player'])
+            else if (stm32_json ['property'] && parseInt (stm32_json ['property']) < 0 && stm32_json ['player'])
+                deletePropertyFromCurrentPlayer (Math.abs (parseInt (stm32_json ['property'])), parseInt (stm32_json ['player']))
             else if (stm32_json ['money'] && stm32_json ['player']) {
                 fund = parseInt (stm32_json ['money'])
                 $("#fundtext" + (parseInt (stm32_json ['player']) + 1).toString()).html ("$" + fund.toString())
@@ -230,6 +288,7 @@ function uart_control (stm32_json) {
             break;
         case 'dialog':
             $(".btn-dialog").remove();
+            window.BOARD_STATE = "PLAYERWAIT"
             stm32_json ['options'].forEach((element, index, arr) => {
                 newbutton = document.createElement ('button')
                 newbutton.className = 'btn btn-dialog'
@@ -240,16 +299,19 @@ function uart_control (stm32_json) {
                 $("#landed_unowned_dialog").append (newbutton)
             });
             break;
+        case 'manage':
+            window.BOARD_STATE = "SCROLLCARD"
+            displayProps (stm32_json ['properties'])
+            break;
         case 'endturn':
-            $("#diedialog").css ('transform', stm32_json ['player'] == '1' ? 'rotate(180deg)' : 'rotate(0deg)')
-            $("#landed_unowned_dialog").css ('transform', stm32_json ['player'] == '1' ? 'rotate(180deg)' : 'rotate(0deg)')
-            continue_play(stm32_json ['player'])
+            $("#overlay").css ('transform', stm32_json ['player'] == '1' ? 'rotate(180deg)' : 'rotate(0deg)')
             break;
         case 'diceroll':
             handleDiceRoll (stm32_json ['roll'], stm32_json ['position'], stm32_json ['ccc_id'])
             break;
         case 'piecemoved':
-            landed_on_tile()
+            landed_on_tile(-1, NEXT_POS)
+            window.BOARD_STATE = "PLAYERWAIT"
             break;
         case 'poweroff':
             document.getElementById("welcome").style.display = "none";
