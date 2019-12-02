@@ -173,7 +173,7 @@ function createButtonID (name) {
 }
 
 function init_uart () {
-    window.stm32 = new Serial({baudRate: 115200, port: '/dev/ttyS0'});
+    window.stm32 = new Serial({baudRate: 115200, portId: '/dev/ttyS0'});
     window.stm32.message = ""
     window.stm32.open(() => {
         window.stm32.on('data', (data) => {

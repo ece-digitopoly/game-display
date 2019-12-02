@@ -555,6 +555,7 @@ function gamePlayKeyHandler (uartjson) {
                                ["#btn_manageproperties", "MPP"], 
                                ["#btn_endturn", "EPT"],
                                ["#btn_mortage", "MTG"],
+                               ["#btn_unmortage", "UMG"],
                                ["#btn_build", "BLD"],
                                ["#btn_trade", "TRD"]
                              ]
