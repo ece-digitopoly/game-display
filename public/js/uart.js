@@ -24,8 +24,12 @@ else {
         console.log (msg) 
         if (msg == "STR") {
             setTimeout (function () {
-                uart_control ({"action": "dicerolling"})
+                uart_control ({"action": "dicerolling", "trial": "1"})
             }, 2000)
+
+            setTimeout (function () {
+                uart_control ({"action": "dicerolling", "trial": "2"})
+            }, 3000)
             
             setTimeout (function () {
                 uart_control ({"action": "diceroll", "roll": "1", "position": "1", "ccc_id": "3"})
@@ -253,7 +257,7 @@ function uart_control (stm32_json) {
             }
         break;
         case 'dicerolling':
-            detectedDiceRoll()
+            detectedDiceRoll(stm32_json ['trial'])
             break;
         case 'trademoney':
             $("#landed_unowned_dialog").css ('display', 'none')
@@ -305,17 +309,23 @@ function uart_control (stm32_json) {
             break;
         case 'endturn':
             $("#overlay").css ('transform', stm32_json ['player'] == '1' ? 'rotate(180deg)' : 'rotate(0deg)')
+            $("#diedialog").css ('display', 'flex')
+            $("#landed_unowned_dialog").css ('display', 'none')
             break;
         case 'diceroll':
             handleDiceRoll (stm32_json ['roll'], stm32_json ['position'], stm32_json ['ccc_id'])
             break;
         case 'piecemoved':
+            $("#dialogcardset div").remove()
             landed_on_tile(-1, NEXT_POS)
             window.BOARD_STATE = "PLAYERWAIT"
             break;
         case 'poweroff':
             document.getElementById("welcome").style.display = "none";
+            document.getElementById("newgame").style.display = "none";
             document.getElementById("gameboard").style.display = "none";
+            document.getElementById("border").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
             document.getElementById("div_poweroff").style.opacity = 0
             document.getElementById("div_poweroff").style.display = "block";
             openSettingsOpacityInterval = setInterval (function () {

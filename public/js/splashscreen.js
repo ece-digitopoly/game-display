@@ -174,7 +174,6 @@ function hideNewGamePhaseOutToGameBoard() {
     if (document.getElementById ("newgame").style ['opacity'] == '0')
     {
         document.getElementById ("newgame").style ['display'] = 'none'
-        stm32_write ("STR");
         showGameBoard()
         return
     }
@@ -203,6 +202,7 @@ function hideNewGamePhaseOutToMainMenu() {
 
 function showGameBoard() {
     window.gameState = 'START'
+    stm32_write ("STR");
     $("#gameboard").css ('display', 'flex')
     $("#gameboard").css ('opacity', '1')
     $("#overlay").css ('display', 'flex')

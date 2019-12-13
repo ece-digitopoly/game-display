@@ -554,8 +554,8 @@ function gamePlayKeyHandler (uartjson) {
                                ["#btn_auction", "AUC"], 
                                ["#btn_manageproperties", "MPP"], 
                                ["#btn_endturn", "EPT"],
-                               ["#btn_mortage", "MTG"],
-                               ["#btn_unmortage", "UMG"],
+                               ["#btn_mortgage", "MTG"],
+                               ["#btn_unmortgage", "UMG"],
                                ["#btn_build", "BLD"],
                                ["#btn_trade", "TRD"]
                              ]
@@ -602,10 +602,10 @@ function gamePlayKeyHandler (uartjson) {
     }
 }
 
-function detectedDiceRoll () {
+function detectedDiceRoll (trial) {
     window.BOARD_STATE = "DICEWAIT"
     $("#rolldie").attr ("src", "public/images/die.gif")
-    $("#dialog1").html ("Dice roll detected!")
+    $("#dialog1").html ((trial == "1" ? "1st" : "2nd") + " dice roll detected!")
     $("#dialog2").html ("Waiting for roll...")
 }
 
@@ -859,7 +859,7 @@ function landed_on_tile (id, prop, end) {
         ccc_label = document.createElement ("label")
         ccc_label.classList.add ('ccc-data')
         ccc_label.classList.add ('ccc-text')
-        ccc_label.innerHTML = chance [CCC_ID]['description']
+        ccc_label.innerHTML = property_community.includes (prop) ? commchest [CCC_ID]['description'] : chance [CCC_ID]['description']
         $("#dialogcardset").css ('display', 'none')
         $("#dialogccc").append (ccc_label)
         $("#dialogccc").css ('display', 'flex')
